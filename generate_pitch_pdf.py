@@ -2,241 +2,259 @@ import os
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable
+from reportlab.platypus import (
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether, HRFlowable
+)
 
 def generate_pdf():
     pdf_path = os.path.abspath("AI_Finance_Controller_Presentation_Guide.pdf")
     doc = SimpleDocTemplate(
         pdf_path,
         pagesize=letter,
-        rightMargin=40,
-        leftMargin=40,
-        topMargin=40,
-        bottomMargin=40
+        rightMargin=36,
+        leftMargin=36,
+        topMargin=36,
+        bottomMargin=36
     )
 
     styles = getSampleStyleSheet()
     
-    # Custom Palette
+    # Custom Colors
     c_primary = colors.HexColor("#1e1e2d")
-    c_accent = colors.HexColor("#6366f1")
-    c_emerald = colors.HexColor("#10b981")
-    c_amber = colors.HexColor("#f59e0b")
+    c_accent = colors.HexColor("#4f46e5")
+    c_accent_dark = colors.HexColor("#3730a3")
+    c_emerald = colors.HexColor("#059669")
+    c_amber = colors.HexColor("#d97706")
+    c_rose = colors.HexColor("#e11d48")
     c_dark = colors.HexColor("#0f172a")
-    c_light = colors.HexColor("#f8fafc")
     c_text = colors.HexColor("#334155")
+    c_bg_light = colors.HexColor("#f1f5f9")
     
-    # Custom Styles
+    # Typography Styles
     title_style = ParagraphStyle(
         'DocTitle',
         parent=styles['Heading1'],
         fontName='Helvetica-Bold',
-        fontSize=20,
-        leading=24,
+        fontSize=18,
+        leading=22,
         textColor=c_accent,
-        spaceAfter=6
+        spaceAfter=4
     )
     
     subtitle_style = ParagraphStyle(
         'DocSubTitle',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=12,
-        leading=16,
+        fontSize=10.5,
+        leading=14,
         textColor=c_text,
-        spaceAfter=12
+        spaceAfter=8
     )
 
     h1_style = ParagraphStyle(
         'SectionH1',
         parent=styles['Heading2'],
         fontName='Helvetica-Bold',
-        fontSize=14,
-        leading=18,
+        fontSize=12.5,
+        leading=16,
         textColor=c_dark,
-        spaceBefore=14,
-        spaceAfter=8
+        spaceBefore=10,
+        spaceAfter=6
     )
 
     h2_style = ParagraphStyle(
         'SectionH2',
         parent=styles['Heading3'],
         fontName='Helvetica-Bold',
-        fontSize=11,
-        leading=15,
+        fontSize=10,
+        leading=14,
         textColor=c_accent,
-        spaceBefore=8,
-        spaceAfter=4
+        spaceBefore=6,
+        spaceAfter=3
     )
 
     body_style = ParagraphStyle(
         'DocBody',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=9.5,
-        leading=14,
+        fontSize=8.5,
+        leading=12.5,
         textColor=c_text,
-        spaceAfter=6
+        spaceAfter=4
     )
 
-    bullet_style = ParagraphStyle(
-        'DocBullet',
+    feature_title_style = ParagraphStyle(
+        'FeatureTitle',
         parent=styles['Normal'],
-        fontName='Helvetica',
+        fontName='Helvetica-Bold',
         fontSize=9,
         leading=13,
-        textColor=c_text,
-        leftIndent=15,
-        spaceAfter=4
+        textColor=c_accent_dark,
+        spaceBefore=4,
+        spaceAfter=2
     )
 
     script_cue_style = ParagraphStyle(
         'ScriptCue',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=9.5,
-        leading=13,
+        fontSize=8.5,
+        leading=12,
         textColor=c_amber,
-        spaceAfter=3
+        spaceAfter=2
     )
 
     script_speech_style = ParagraphStyle(
         'ScriptSpeech',
         parent=styles['Normal'],
         fontName='Helvetica-Oblique',
-        fontSize=9.5,
-        leading=14,
+        fontSize=8.5,
+        leading=12.5,
         textColor=c_dark,
-        spaceAfter=6
+        spaceAfter=5
     )
 
     callout_style = ParagraphStyle(
         'CalloutText',
         parent=styles['Normal'],
-        fontName='Helvetica',
-        fontSize=9,
-        leading=13,
+        fontName='Helvetica-Bold',
+        fontSize=8.5,
+        leading=12,
         textColor=c_dark
     )
 
     elements = []
 
     # Title & Header
-    elements.append(Paragraph("🏦 FinanceFlow — AI Finance Controller", title_style))
-    elements.append(Paragraph("Track 04: 'Run the books and the cash position' | Comprehensive Guide & Video Pitch", subtitle_style))
-    elements.append(HRFlowable(width="100%", thickness=1.5, color=c_accent, spaceBefore=4, spaceAfter=12))
+    elements.append(Paragraph("🏦 FinanceFlow — AI Finance Controller & FinTech Platform", title_style))
+    elements.append(Paragraph("Track 04: 'Run the books and the cash position' | Complete Feature Blueprint & 5-Min Pitch Guide", subtitle_style))
+    elements.append(HRFlowable(width="100%", thickness=1.5, color=c_accent, spaceBefore=2, spaceAfter=8))
 
-    # SECTION 1: EXECUTIVE SUMMARY
-    elements.append(Paragraph("1. Executive Summary & The 2026 Core Bottleneck", h1_style))
-    p1 = ("In modern financial operations, <b>verification capacity, not generation speed, is the primary bottleneck</b>. "
-          "While LLMs can draft text easily, closing the actual finance-ops loop across multi-source ledgers, "
-          "resolving settlement discrepancies, and forecasting cash positions requires strict accuracy, deterministic reconciliation, "
-          "and an honest exception handling engine. <b>FinanceFlow</b> was built specifically to solve this.")
-    elements.append(Paragraph(p1, body_style))
-    elements.append(Spacer(1, 6))
+    # SECTION 1: COMPLETE FEATURE-BY-FEATURE BREAKDOWN
+    elements.append(Paragraph("1. Complete Features Breakdown (Har Ek Feature Ki Detail)", h1_style))
+    elements.append(Paragraph("Neeche project ke <b>saare 11 core modules aur unke features</b> ko step-by-step explain kiya gaya hai taaki aap video ya interview me har ek feature ko confidence ke sath demonstrate kar sakein:", body_style))
+    elements.append(Spacer(1, 4))
 
-    # SECTION 2: TRACK 04 REQUIREMENTS MATRIX
-    elements.append(Paragraph("2. Track 04 Alignment Matrix", h1_style))
-    
-    table_data = [
-        [
-            Paragraph("<b>Recruiter Requirement (Track 04)</b>", callout_style),
-            Paragraph("<b>FinanceFlow Implementation</b>", callout_style),
-            Paragraph("<b>Status</b>", callout_style)
-        ],
-        [
-            Paragraph("<b>Multi-source Reconciliation</b><br/>(50+ record synthetic batch)", body_style),
-            Paragraph("Automated 3-way matching across Bank Statements, ERP Ledgers, and Payment Gateway records.", body_style),
-            Paragraph("<font color='#10b981'><b>100% Ready</b></font>", body_style)
-        ],
-        [
-            Paragraph("<b>Measured Accuracy & Exception List</b><br/>('One cherry-pick proves nothing')", body_style),
-            Paragraph("Calculates real match rate (96%), throughput (tx/sec), and outputs detailed categorized exceptions (fee mismatches, unposted invoices).", body_style),
-            Paragraph("<font color='#10b981'><b>100% Ready</b></font>", body_style)
-        ],
-        [
-            Paragraph("<b>Settlement Q&A Agent</b>", body_style),
-            Paragraph("Conversational AI context engine answering real-time ledger settlement and discrepancy queries.", body_style),
-            Paragraph("<font color='#10b981'><b>100% Ready</b></font>", body_style)
-        ],
-        [
-            Paragraph("<b>Forward Cash Forecaster</b>", body_style),
-            Paragraph("30/60/90-day cash runway and multi-year compound wealth simulation engine.", body_style),
-            Paragraph("<font color='#10b981'><b>100% Ready</b></font>", body_style)
-        ],
-        [
-            Paragraph("<b>Tax-Line Matcher & KYC</b>", body_style),
-            Paragraph("Old vs New regime tax deduction classifier + regex PAN card validation.", body_style),
-            Paragraph("<font color='#10b981'><b>100% Ready</b></font>", body_style)
-        ]
+    features = [
+        ("1. 📊 Executive Dashboard & AI Health Score (0–100)",
+         "• <b>Live KPI Cards:</b> Real-time Net Worth, Monthly Inflow, Total Expenses, aur Total Savings ka aggregate view.<br/>"
+         "• <b>AI Financial Health Score:</b> Algorithm jo Debt-to-Income (DTI), Emergency Fund Buffer, Savings Rate aur Spending Discipline ko measure karke 0-100 scoring provide karta hai.<br/>"
+         "• <b>Interactive Chart.js Visualizations:</b> 6-Month Income vs Expense trends, Category-wise Expense distribution (Doughnut), aur dynamic cash inflow graphs."),
+
+        ("2. 💸 Transactions Manager & Smart Categorization",
+         "• <b>Full CRUD Operations:</b> Income aur Expense transactions ko add, edit, delete aur list karne ki facility.<br/>"
+         "• <b>Auto-Categorization:</b> Food, Housing/Rent, Utilities, Shopping, Salary, Investments, etc.<br/>"
+         "• <b>Multi-Field Filter:</b> Date range, category, payment mode (UPI, Net Banking, Credit Card, Cash) aur search keyword se instantly transactions filter hote hain."),
+
+        ("3. 🎯 Category Budgeting & Overspending Alert Engine",
+         "• <b>Category-wise Monthly Limits:</b> Har category ke liye monthly spending target set kiya jata hai.<br/>"
+         "• <b>3-Tier Visual Alerts:</b> Safe (Green) &rarr; Warning at 80% limit (Yellow) &rarr; Overbudget Breach (Red alert).<br/>"
+         "• <b>Dynamic Remaining Balance:</b> Real-time balance update hota hai jo user ko overspend karne se prevent karta hai."),
+
+        ("4. 📈 Investment Portfolio & Asset Tracker",
+         "• <b>Multi-Asset Support:</b> Stocks, Mutual Funds, Cryptocurrencies, Gold, aur Fixed Deposits (FDs).<br/>"
+         "• <b>Performance Analytics:</b> Invested Amount, Current Market Value, Absolute Return (&amp;#8377;), aur Percentage CAGR Return (%).<br/>"
+         "• <b>Visual Asset Allocation:</b> Portfolio diversification ko visual doughnut chart me dikhata hai."),
+
+        ("5. 🎯 Target Financial Goals Simulator",
+         "• <b>Goal Tracking:</b> Emergency Fund, House Downpayment, Vacation, etc. ke target set karna.<br/>"
+         "• <b>Visual Progress:</b> Target Date, Target Amount, Current Saved Amount aur Percentage completion timeline."),
+
+        ("6. 💳 Debt Payoff & Bill Reminders Management",
+         "• <b>Debt Payoff Engine:</b> Loans, Credit Cards aur EMIs ka interest rate aur minimum monthly payment track karna.<br/>"
+         "• <b>Upcoming Bill Alerts:</b> Electricity, Rent, WiFi, aur Subscriptions ke due date reminders with 'Paid/Pending' status toggle."),
+
+        ("7. 📋 Tax Planning & Deductions Matcher",
+         "• <b>Old vs New Regime Estimator:</b> Tax slabs aur comparative savings calculation.<br/>"
+         "• <b>Tax-Line Matcher:</b> 80C, 80D, HRA aur standard deductions ka automatic deduction mapping."),
+
+        ("8. 🤖 AI Financial Context Advisor (Chatbot)",
+         "• <b>Conversational Context Engine:</b> LLM / rule-based AI jo ledger data se connect hoke natural language me jawab deta hai.<br/>"
+         "• <b>Domain Tools:</b> Budget Tool, Expense Tool, Investment Tool, aur Health Score Explanation Tool.<br/>"
+         "• <b>Sample Prompts:</b> 'Mera is month spending kaisa hai?', 'Where am I overspending?', 'Can I afford buying X?'"),
+
+        ("9. 🏦 Autonomous Finance-Ops & Multi-Source Reconciliation (Track 04 Core)",
+         "• <b>50+ Record Synthetic Batch Engine:</b> Bank Statements, ERP Invoices aur Payment Gateways ka 3-way multi-source matching.<br/>"
+         "• <b>2-Pass Heuristic Matching:</b> Strict hash matching + tolerance delta for 2% gateway processing fees &amp; +/- 48h settlement windows.<br/>"
+         "• <b>Honest Exception List:</b> Unmatched transactions ko root-cause categorization ke sath report karta hai (AMOUNT_MISMATCH, UNPOSTED_ERP, GATEWAY_FEE_DISCREPANCY).<br/>"
+         "• <b>Measured Accuracy &amp; Throughput:</b> Real match rate (96%) aur tx/sec throughput compute karta hai."),
+
+        ("10. 🔮 Advanced FinTech Add-ons (Recovery, Risk &amp; PAN)",
+         "• <b>Win/Loss Recovery Simulator:</b> Portfolio loss recovery timeline multi-return scenarios par project karta hai (8%, 12%, 15% CAGR).<br/>"
+         "• <b>Risk Profiling Assessment:</b> 7-question evaluation assessing Conservative, Moderate, ya Aggressive profile.<br/>"
+         "• <b>2040 Wealth Forecaster:</b> Compound wealth simulation modeling net worth milestones up to year 2040.<br/>"
+         "• <b>Sandbox PAN &amp; Income Verification:</b> Regex verification ([A-Z]{5}[0-9]{4}[A-Z]{1}) with verified security badge."),
+
+        ("11. 🛡️ Security & Enterprise Architecture",
+         "• <b>Spring Security 6 &amp; JWT:</b> Cryptographic HMAC-SHA256 JWT tokens with server-side token blacklist on logout.<br/>"
+         "• <b>PostgreSQL 15 &amp; H2 Database:</b> schema.sql with complete foreign keys &amp; referential integrity.<br/>"
+         "• <b>Docker &amp; Kubernetes Ready:</b> Containerized multi-service setup (docker-compose.yml, k8s manifests).")
     ]
 
-    t = Table(table_data, colWidths=[150, 310, 70])
-    t.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#e2e8f0")),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#cbd5e1")),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('TOPPADDING', (0, 0), (-1, -1), 5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-    ]))
-    elements.append(t)
-    elements.append(Spacer(1, 10))
+    for title, desc in features:
+        elements.append(Paragraph(title, feature_title_style))
+        elements.append(Paragraph(desc, body_style))
+        elements.append(Spacer(1, 2))
 
-    # SECTION 3: 5-MINUTE VIDEO SCRIPT
-    elements.append(Paragraph("3. 🎬 5-Minute Video Demo Script (Minute-by-Minute)", h1_style))
-    
-    # Minute 1
-    elements.append(Paragraph("⏱️ Minute 1 [0:00 – 0:45] — Hook & Problem Statement", h2_style))
-    elements.append(Paragraph("🖥️ <b>Visual Cue:</b> Open Dashboard (http://localhost:5500) showing KPI Cards and GitHub Repo.", script_cue_style))
-    elements.append(Paragraph('"Hello everyone, I’m Ritik Pandey, and this is my submission for Track 04: AI Finance Controller — Run the books and the cash position. In 2026, builder consensus is clear: generation speed is no longer the bottleneck—verification capacity is. Finance teams still spend countless hours manually reconciling multi-source ledgers, tracking settlement discrepancies, and forecasting forward cash positions. To solve this, I built FinanceFlow—an autonomous AI Finance Controller and Finance-Ops engine that automates multi-source reconciliation across 50+ record batches, reports measured accuracy with an honest exception list, provides a real-time Settlement Q&A Agent, and forecasts dynamic cash positions."', script_speech_style))
+    elements.append(Spacer(1, 6))
+
+    # SECTION 2: 5-MINUTE VIDEO DEMO SCRIPT
+    elements.append(Paragraph("2. 🎬 5-Minute Video Pitch Script (Minute-by-Minute Guide)", h1_style))
+    elements.append(Paragraph("Video record karte waqt aap screen par feature open karein aur neeche di gayi speech ko smoothly follow karein:", body_style))
     elements.append(Spacer(1, 4))
+
+    # Minute 1
+    elements.append(Paragraph("⏱️ Minute 1 [0:00 – 0:45] — Introduction & The Verification Bottleneck", h2_style))
+    elements.append(Paragraph("🖥️ <b>Screen Action:</b> Show live Glassmorphic Dashboard (http://localhost:5500) & GitHub Repository.", script_cue_style))
+    elements.append(Paragraph('"Hello everyone, I’m Ritik Pandey, and this is my submission for Track 04: AI Finance Controller — Run the books and the cash position. In 2026, the builder consensus is clear: generation speed is no longer the bottleneck—verification capacity is. Finance teams still spend countless manual hours reconciling multi-source ledgers, tracking settlement discrepancies, and forecasting forward cash positions. To solve this, I built FinanceFlow—an autonomous AI Finance Controller that automates multi-source reconciliation across 50+ record batches, reports measured accuracy with an honest exception list, provides a real-time Settlement Q&A Agent, and forecasts dynamic cash runway."', script_speech_style))
+    elements.append(Spacer(1, 2))
 
     # Minute 2
     elements.append(Paragraph("⏱️ Minute 2 [0:45 – 2:00] — Multi-Source Reconciliation & Honest Exception List", h2_style))
-    elements.append(Paragraph("🖥️ <b>Visual Cue:</b> Click 'Run 50+ Record Batch Auto-Reconciliation' and point out match rate and exceptions.", script_cue_style))
-    elements.append(Paragraph('"Let’s dive straight into the core track requirement: Multi-Source Reconciliation. Here, the engine ingests a synthetic batch of 50+ multi-source transactions across three distinct data pipelines: Bank Statements, ERP Invoices, and Payment Gateway logs. Notice the bar we set for this engine: First, it achieves a measured match rate of 96% with automated 3-way hash matching. Second, more importantly, it does not cherry-pick. It surfaces an Honest Exception List highlighting unresolved records—such as a ₹150 gateway fee mismatch or an unposted ERP invoice. Each exception is categorized with an exact discrepancy reason so human controllers can audit or auto-resolve with one click."', script_speech_style))
-    elements.append(Spacer(1, 4))
+    elements.append(Paragraph("🖥️ <b>Screen Action:</b> Open Finance Ops tab, click 'Run 50+ Record Batch Auto-Reconciliation', highlight 96% Match Rate & Exceptions.", script_cue_style))
+    elements.append(Paragraph('"Let’s dive straight into the core track requirement: Multi-Source Reconciliation. Here, our engine ingests a synthetic batch of 50+ transactions across three independent pipelines: Bank Statements, ERP Ledgers, and Payment Gateway records. Notice the high bar we set: First, it achieves a measured match rate of 96% with automated 3-way matching. Second, it doesn’t cherry-pick. It surfaces an Honest Exception List highlighting unresolved records—such as a ₹150 gateway fee mismatch or an unposted ERP invoice. Each exception is categorized with an exact discrepancy reason for auditability."', script_speech_style))
+    elements.append(Spacer(1, 2))
 
     # Minute 3
     elements.append(Paragraph("⏱️ Minute 3 [2:00 – 3:00] — Settlement Q&A Agent & Forward Cash Forecaster", h2_style))
-    elements.append(Paragraph("🖥️ <b>Visual Cue:</b> Open AI Chat drawer, type settlement query, then show Cash Runway chart.", script_cue_style))
-    elements.append(Paragraph('"Next is our Settlement Q&A Agent. Connecting directly to our in-memory financial context service, the AI assistant answers real-time ledger questions such as where our cash bottlenecks are or why specific payouts are delayed. Moving to the Forward Cash Forecaster: instead of relying on static spreadsheets, our forecasting model projects 30, 60, and 90-day cash runway based on recurring debt obligations, verified income streams, and dynamic burn rates, giving leadership a clear visual of their future liquidity."', script_speech_style))
-    elements.append(Spacer(1, 4))
+    elements.append(Paragraph("🖥️ <b>Screen Action:</b> Open AI Chat drawer, ask settlement question, then show Cash Runway chart.", script_cue_style))
+    elements.append(Paragraph('"Next is our Settlement Q&A Agent. Connecting directly to our in-memory financial context service, the AI assistant answers real-time ledger questions like: Where are our cash bottlenecks? and Why are specific vendor payouts delayed? Moving to the Forward Cash Forecaster: instead of static spreadsheets, our model projects 30, 60, and 90-day cash runway based on recurring debt obligations, verified income streams, and dynamic burn rates, giving leadership complete visibility over liquidity."', script_speech_style))
+    elements.append(Spacer(1, 2))
 
     # Minute 4
-    elements.append(Paragraph("⏱️ Minute 4 [3:00 – 4:15] — Full FinTech Suite & Architecture", h2_style))
-    elements.append(Paragraph("🖥️ <b>Visual Cue:</b> Show Investment Portfolio, Tax Estimator, and backend code in IDE.", script_cue_style))
-    elements.append(Paragraph('"Beyond reconciliation, FinanceFlow is a comprehensive FinTech platform featuring Tax-Line Matching for automated deductions under Old vs New tax regimes, an Investment Portfolio Asset Tracker with multi-scenario win/loss recovery projections, and Sandbox PAN & Income Verification. Under the hood, the architecture is enterprise-grade: built on Java 17 and Spring Boot 3.2.1 with strict Spring Security 6 JWT authentication, token blacklisting, PostgreSQL/H2 persistence, and containerized Docker/Kubernetes manifests."', script_speech_style))
-    elements.append(Spacer(1, 4))
+    elements.append(Paragraph("⏱️ Minute 4 [3:00 – 4:15] — Core FinTech Modules (Budgets, Portfolio, Tax, PAN)", h2_style))
+    elements.append(Paragraph("🖥️ <b>Screen Action:</b> Quick tour of Transactions, Category Budgeting, Investment Portfolio, Tax Estimator, and backend code in IDE.", script_cue_style))
+    elements.append(Paragraph('"Beyond reconciliation, FinanceFlow provides a complete FinTech ecosystem: A Category Budgeting Engine with near-breach visual alerts, an Investment Asset Tracker with win/loss recovery projections, Tax-Line Matching for Old vs New regime deductions, and Sandbox PAN verification. On the backend, it is built with Java 17, Spring Boot 3.2.1, strict Spring Security 6 JWT authentication, token blacklisting on logout, PostgreSQL persistence, and Docker/Kubernetes containerization."', script_speech_style))
+    elements.append(Spacer(1, 2))
 
     # Minute 5
-    elements.append(Paragraph("⏱️ Minute 5 [4:15 – 5:00] — Conclusion & Wrap-Up", h2_style))
-    elements.append(Paragraph("🖥️ <b>Visual Cue:</b> Show README.md on GitHub, commit log, and active app.", script_cue_style))
-    elements.append(Paragraph('"To summarize: FinanceFlow meets and exceeds Track 04’s bar by closing the finance-ops loop with high throughput, measured verification accuracy, conversational settlement intelligence, and honest exception handling. The complete source code, docker-compose configuration, and documentation are available on my GitHub repository. Thank you for your time, and I look forward to discussing this in the next round!"', script_speech_style))
-    elements.append(Spacer(1, 8))
+    elements.append(Paragraph("⏱️ Minute 5 [4:15 – 5:00] — Summary & Conclusion", h2_style))
+    elements.append(Paragraph("🖥️ <b>Screen Action:</b> Show README.md on GitHub, clean commit history, and wrap up.", script_cue_style))
+    elements.append(Paragraph('"To summarize: FinanceFlow meets and exceeds Track 04’s bar by closing the finance-ops loop with high throughput, measured verification accuracy, conversational settlement intelligence, and honest exception handling. The complete source code and documentation are available on my GitHub repository. Thank you for your time, and I look forward to discussing this in the next round!"', script_speech_style))
+    elements.append(Spacer(1, 6))
 
-    # SECTION 4: INTERVIEW CHEAT SHEET
-    elements.append(Paragraph("4. 🧠 Top Technical Q&A (For Evaluators & Interviews)", h1_style))
+    # SECTION 3: TOP TECHNICAL INTERVIEW Q&A
+    elements.append(Paragraph("3. 🧠 Top Interview Questions & How to Answer Them", h1_style))
     
     qa_list = [
         ("Q1: How does your reconciliation engine handle timing and fee discrepancies?",
-         "A: It implements a multi-pass heuristic matcher: Pass 1 does strict 3-way hash matching (ID + exact amount). Pass 2 applies a configurable tolerance delta for gateway processing fees (e.g. 2% MDR) and settlement date windows (+/- 48 hours). Records failing both passes are explicitly classified into the Honest Exception List."),
+         "A: We implement a 2-pass heuristic matcher: Pass 1 does strict 3-way hash matching (Transaction ID + exact amount). Pass 2 applies a tolerance delta for gateway processing fees (e.g. 2% MDR) and settlement date windows (+/- 48 hours). Records failing both passes are explicitly classified into the Honest Exception List with root-cause tags."),
         ("Q2: Why did you prioritize measured accuracy and exception classification over simple matching?",
-         "A: In real-world enterprise finance, an engine that blindly marks 100% matches creates audit hazards. An honest exception list with root-cause categorization (AMOUNT_MISMATCH, UNPOSTED_ERP, GATEWAY_TIMING) gives finance controllers full trust and auditability."),
-        ("Q3: How is the backend secured and architected?",
-         "A: The backend runs Spring Boot 3.2.1 with Spring Security 6. All protected routes require a cryptographically signed HMAC-SHA256 JWT Bearer token with server-side token blacklisting on logout. Data access is managed via Spring Data JPA and Hibernate ORM on PostgreSQL/H2."),
-        ("Q4: What is the purpose of the Settlement Q&A Agent?",
-         "A: It bridges the gap between raw ledger records and human decision-makers by aggregating real-time ledger states into a conversational context window to answer ad-hoc questions on cash positions and pending settlements.")
+         "A: In real enterprise finance, blindly marking 100% matches creates severe compliance and audit risks. An honest exception list with categorized discrepancies (AMOUNT_MISMATCH, UNPOSTED_ERP, GATEWAY_TIMING) provides genuine auditability for finance controllers."),
+        ("Q3: How is the backend secured?",
+         "A: The backend runs Spring Boot 3.2.1 with Spring Security 6. All protected routes require a cryptographically signed HMAC-SHA256 JWT Bearer token. On logout, active tokens are stored in a thread-safe token blacklist to prevent replay attacks."),
+        ("Q4: What is the role of the Settlement Q&A Agent?",
+         "A: It aggregates live ledger states into a structured context window, enabling non-technical stakeholders to ask ad-hoc questions on ledger health, settlement delays, and cash runway.")
     ]
 
     for q, a in qa_list:
-        elements.append(Paragraph(f"<b>{q}</b>", h2_style))
+        elements.append(Paragraph(f"<b>{q}</b>", feature_title_style))
         elements.append(Paragraph(a, body_style))
         elements.append(Spacer(1, 2))
 
     # Build PDF
     doc.build(elements)
-    print(f"PDF successfully generated: {pdf_path}")
+    print(f"PDF successfully updated: {pdf_path}")
 
 if __name__ == "__main__":
     generate_pdf()
