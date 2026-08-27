@@ -10,15 +10,6 @@
 
 ---
 
-## 📌 Important Note on Authentication & Services
-
-> [!NOTE]
-> ### ⚠️ Status of Google Auth & Mobile OTP Services:
-> - **Primary / Active Login:** The platform is currently powered by **Default Authentication (Email/Password with BCrypt & Spring Security JWT)**, which is fully operational and secured with server-side token blacklisting.
-> - **Google OAuth2 & Mobile OTP (Partially Integrated):** The frontend UI components, Google Identity Services SDK hooks, Device Account Chooser modals, and backend verification routes (`/api/auth/oauth2/*`, `/api/auth/mobile/*`) have been architected and partially integrated. However, because external third-party production credentials (such as a registered **Google Cloud Console OAuth2 Web Client ID** and paid telecom SMS gateway API keys like **Twilio / Fast2SMS**) require live account configuration, direct production sign-in via external Google servers is in a **partial/demo state**. For standard application access, the default credentials and direct session flows are currently utilized.
-
----
-
 ## 🌟 Key Features & Functional Modules
 
 ### 1. 📊 Financial Dashboard & Health Score Engine
