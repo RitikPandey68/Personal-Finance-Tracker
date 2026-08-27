@@ -1,30 +1,53 @@
-version: "3.9"
+version: '3.8'
 
 services:
-  backend:
+  app:
     build:
-      context: ./backend
+      context: .
+      dockerfile: Dockerfile
+    container_name: financeflow-backend
     ports:
       - "8002:8002"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/financedb
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres123
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=financedb
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     depends_on:
       - postgres
-    restart: unless-stopped
+      - redis
+    networks:
+      - financeflow-net
 
   postgres:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
+    container_name: financeflow-postgres
     environment:
       POSTGRES_DB: financedb
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
-    volumes:
-      - finance_pgdata:/var/lib/postgresql/data
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - financeflow-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: financeflow-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - financeflow-net
+
+networks:
+  financeflow-net:
+    driver: bridge
 
 volumes:
-  finance_pgdata:
+  pgdata:

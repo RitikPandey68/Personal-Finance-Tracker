@@ -9,6 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Google Identity Services (GSI) Real OAuth 2.0 Client SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -33,9 +35,15 @@
       <a href="#" class="sidebar-link" data-page="goals">
         <i class="fas fa-bullseye"></i><span>Goals</span>
       </a>
-      <div class="nav-section-label" style="margin-top:1.5rem">FINANCE</div>
+      <div class="nav-section-label" style="margin-top:1.5rem">FINANCE & INVESTMENTS</div>
       <a href="#" class="sidebar-link" data-page="investments">
         <i class="fas fa-chart-line"></i><span>Investments</span>
+      </a>
+      <a href="#" class="sidebar-link" data-page="recovery">
+        <i class="fas fa-arrow-trend-up"></i><span>Recovery Simulator</span>
+      </a>
+      <a href="#" class="sidebar-link" data-page="recommendation">
+        <i class="fas fa-brain"></i><span>Risk & Recommend</span>
       </a>
       <a href="#" class="sidebar-link" data-page="debt">
         <i class="fas fa-credit-card"></i><span>Debt Tracker</span>
@@ -45,6 +53,25 @@
       </a>
       <a href="#" class="sidebar-link" data-page="reports">
         <i class="fas fa-chart-bar"></i><span>Reports</span>
+      </a>
+      <div class="nav-section-label" style="margin-top:1.5rem">AI & FINTECH EXTENSIONS</div>
+      <a href="#" class="sidebar-link" data-page="chatbot">
+        <i class="fas fa-robot"></i><span>AI Assistant</span>
+      </a>
+      <a href="#" class="sidebar-link" data-page="security">
+        <i class="fas fa-shield-halved"></i><span>Security & Forecast</span>
+      </a>
+      <a href="#" class="sidebar-link" data-page="verification">
+        <i class="fas fa-id-card"></i><span>PAN & Income</span>
+      </a>
+      <a href="#" class="sidebar-link" data-page="taxmatcher">
+        <i class="fas fa-file-invoice-dollar"></i><span>Tax Line Matcher</span>
+      </a>
+      <a href="#" class="sidebar-link" data-page="financeops">
+        <i class="fas fa-calculator"></i><span>Finance-Ops & Books</span>
+      </a>
+      <a href="#" class="sidebar-link" data-page="fintechsuite" style="color:var(--color-purple);font-weight:600">
+        <i class="fas fa-bolt" style="color:var(--color-purple)"></i><span>⚡ FinTech Suite</span>
       </a>
       <div class="nav-section-label" style="margin-top:1.5rem">ACCOUNT</div>
       <a href="#" class="sidebar-link" data-page="accounts">
@@ -93,8 +120,39 @@
         <button class="topbar-btn" title="Add Transaction" onclick="openAddTransaction()">
           <i class="fas fa-plus"></i>
         </button>
-        <div class="user-avatar">
-          <i class="fas fa-user"></i>
+        <div class="user-profile-menu-container" style="position:relative">
+          <div class="user-avatar" id="userAvatarBtn" onclick="toggleUserDropdown()" title="Account & Security">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <div id="userProfileDropdown" class="glass-card" style="display:none;position:absolute;top:48px;right:0;width:280px;padding:1rem;z-index:999;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
+            <div style="display:flex;align-items:center;gap:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid rgba(255,255,255,0.1)">
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--color-purple),#4f46e5);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">
+                RP
+              </div>
+              <div style="overflow:hidden">
+                <div style="font-weight:600;font-size:0.9rem;white-space:nowrap;text-overflow:ellipsis;overflow:hidden" id="dropdownUserName">Ritik Pandey</div>
+                <div style="font-size:0.75rem;color:var(--text-muted);white-space:nowrap;text-overflow:ellipsis;overflow:hidden" id="dropdownUserEmail">ritik@financeflow.com</div>
+              </div>
+            </div>
+            <div style="margin:0.75rem 0;display:flex;flex-direction:column;gap:0.4rem;font-size:0.8rem">
+              <div style="display:flex;justify-content:space-between;color:var(--text-muted)">
+                <span>Security Status</span>
+                <span class="badge" style="background:rgba(16,185,129,0.2);color:#10b981"><i class="fas fa-lock"></i> JWT Protected</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;color:var(--text-muted)">
+                <span>OAuth2 Provider</span>
+                <span style="color:#fff;font-weight:500" id="dropdownAuthProvider">Active Session</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.4rem;padding-top:0.6rem;border-top:1px solid rgba(255,255,255,0.1)">
+              <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;gap:0.4rem" onclick="openOAuth2Modal()">
+                <i class="fas fa-key"></i> OAuth2 / Mobile Login
+              </button>
+              <button class="btn btn-sm" style="width:100%;justify-content:center;gap:0.4rem;background:rgba(239,68,68,0.2);color:#ef4444;border:1px solid rgba(239,68,68,0.3)" onclick="logoutSession()">
+                <i class="fas fa-arrow-right-from-bracket"></i> Secure Logout
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </header>
@@ -165,9 +223,11 @@
           <div class="chart-header">
             <h3 class="chart-title">Income vs Expenses</h3>
             <div class="chart-filters">
-              <button class="chart-filter-btn active" data-period="6m">6M</button>
-              <button class="chart-filter-btn" data-period="1y">1Y</button>
-              <button class="chart-filter-btn" data-period="all">All</button>
+              <button class="chart-filter-btn" data-period="1w" onclick="changeChartPeriod('1w')">1W</button>
+              <button class="chart-filter-btn" data-period="1m" onclick="changeChartPeriod('1m')">1M</button>
+              <button class="chart-filter-btn active" data-period="6m" onclick="changeChartPeriod('6m')">6M</button>
+              <button class="chart-filter-btn" data-period="1y" onclick="changeChartPeriod('1y')">1Y</button>
+              <button class="chart-filter-btn" data-period="all" onclick="changeChartPeriod('all')">All</button>
             </div>
           </div>
           <canvas id="incomeExpenseChart" height="220"></canvas>
@@ -312,8 +372,11 @@
     <!-- ========== INVESTMENTS PAGE ========== -->
     <div class="page" id="page-investments">
       <div class="page-toolbar">
-        <h2 class="page-sub-title">Investment Portfolio</h2>
-        <button class="btn-primary"><i class="fas fa-plus"></i> Add Investment</button>
+        <div>
+          <h2 class="page-sub-title">Investment Portfolio</h2>
+          <span style="font-size:0.75rem;color:var(--color-green);display:flex;align-items:center;gap:0.4rem;margin-top:0.25rem"><span class="status-dot"></span> Live Market Feed Active (NSE/BSE)</span>
+        </div>
+        <button class="btn-primary" onclick="openAddInvestment()"><i class="fas fa-plus"></i> Add Investment</button>
       </div>
       <div class="investments-grid">
         <div class="glass-card portfolio-summary">
@@ -321,7 +384,10 @@
           <canvas id="portfolioChart" height="250"></canvas>
         </div>
         <div class="glass-card investment-holdings">
-          <h3>Holdings</h3>
+          <div class="section-header-row">
+            <h3>Holdings & Real-Time Stocks</h3>
+            <span style="font-size:0.75rem;color:var(--text-muted)">Auto-updates every 3s</span>
+          </div>
           <div class="holdings-list" id="holdingsList"></div>
         </div>
       </div>
@@ -409,7 +475,809 @@
       </div>
     </div>
 
+    <!-- ========== 1. AI CHATBOT PAGE ========== -->
+    <div class="page" id="page-chatbot">
+      <div class="page-toolbar">
+        <h2 class="page-sub-title"><i class="fas fa-robot" style="color:var(--color-purple)"></i> AI Financial Assistant</h2>
+      </div>
+      <div class="glass-card chat-full-container">
+        <div class="chat-header-bar">
+          <div class="chat-bot-avatar"><i class="fas fa-brain"></i></div>
+          <div>
+            <div class="chat-bot-title">FinanceFlow AI Context Engine</div>
+            <div class="chat-bot-status"><span class="status-dot"></span> Online • Aggregating live user context</div>
+          </div>
+        </div>
+        <div class="chat-messages-log" id="fullChatLog">
+          <div class="chat-bubble bot">
+            Hello! I am your AI Financial Assistant. I analyze your live transactions, budgets, investments, and health score in real-time. How can I assist you today?
+          </div>
+        </div>
+        <div class="chat-suggestions">
+          <button class="chip-btn" onclick="sendChatPrompt('Mera is month spending kaisa hai?')">"Mera is month spending kaisa hai?"</button>
+          <button class="chip-btn" onclick="sendChatPrompt('Where am I spending most?')">"Where am I spending most?"</button>
+          <button class="chip-btn" onclick="sendChatPrompt('Can I afford a 20k gadget?')">"Can I afford X?"</button>
+          <button class="chip-btn" onclick="sendChatPrompt('How is my financial health score?')">"Financial health explanation"</button>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" id="fullChatInput" placeholder="Ask anything about your spending, budget, or investments..." onkeydown="if(event.key==='Enter') sendFullChatMessage()" />
+          <button class="btn-primary" onclick="sendFullChatMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 2. RECOVERY SIMULATOR PAGE ========== -->
+    <div class="page" id="page-recovery">
+      <div class="page-toolbar">
+        <h2 class="page-sub-title"><i class="fas fa-arrow-trend-up" style="color:var(--color-green)"></i> Investment Win/Loss Recovery Simulator</h2>
+      </div>
+      <div class="recovery-grid">
+        <div class="glass-card recovery-inputs-card">
+          <h3><i class="fas fa-calculator"></i> Loss & Recovery Inputs</h3>
+          <div class="form-grid" style="margin-top:1rem">
+            <div class="form-group">
+              <label class="form-label">Original Invested Amount (₹)</label>
+              <input type="number" class="form-input" id="recOriginalVal" value="100000" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Current Portfolio Value (₹)</label>
+              <input type="number" class="form-input" id="recCurrentVal" value="80000" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Monthly Additional Investment (₹)</label>
+              <input type="number" class="form-input" id="recMonthlyInv" value="5000" />
+            </div>
+          </div>
+          <button class="btn-primary" style="margin-top:1rem;width:100%" onclick="runRecoverySimulation()">
+            <i class="fas fa-chart-line"></i> Simulate Recovery Scenarios
+          </button>
+          <div class="recovery-metrics-box" id="recoveryMetricsBox" style="margin-top:1.5rem">
+            <div class="metric-row"><span>Current Loss:</span> <strong class="red" id="recLossAmt">₹20,000 (20%)</strong></div>
+            <div class="metric-row"><span>Gain Required to Break Even:</span> <strong class="orange" id="recReqPct">25.0%</strong></div>
+          </div>
+        </div>
+        <div class="glass-card recovery-chart-card">
+          <h3><i class="fas fa-project-diagram"></i> Recovery Projection Timeline</h3>
+          <p class="sub-text">Projections comparing conservative, moderate, and aggressive expected returns.</p>
+          <canvas id="recoveryChart" height="240"></canvas>
+          <div class="disclaimer-note">⚠️ Note: Projections are calculated estimates based on compound return assumptions.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 3. RISK & RECOMMENDATION PAGE ========== -->
+    <div class="page" id="page-recommendation">
+      <div class="page-toolbar">
+        <h2 class="page-sub-title"><i class="fas fa-brain" style="color:var(--color-cyan)"></i> Investment Recommendation Engine</h2>
+      </div>
+      <div class="recommendation-grid">
+        <div class="glass-card quiz-card">
+          <h3><i class="fas fa-clipboard-question"></i> Risk Profiling Assessment</h3>
+          <form id="riskQuizForm" onsubmit="event.preventDefault(); runRiskAssessment();">
+            <div class="form-group" style="margin-top:1rem">
+              <label class="form-label">1. Age Group</label>
+              <select class="form-input" id="riskAge">
+                <option value="1">Under 30 years</option>
+                <option value="2" selected>30 - 45 years</option>
+                <option value="3">45 - 60 years</option>
+                <option value="4">Above 60 years</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-top:1rem">
+              <label class="form-label">2. Investment Horizon</label>
+              <select class="form-input" id="riskHorizon">
+                <option value="1">Short term (< 1 year)</option>
+                <option value="2">Medium term (1 - 3 years)</option>
+                <option value="3">Long term (3 - 5 years)</option>
+                <option value="4" selected>Very Long term (5+ years)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-top:1rem">
+              <label class="form-label">3. Reaction to 20% Market Dip</label>
+              <select class="form-input" id="riskTolerance">
+                <option value="1">Panic and sell all investments</option>
+                <option value="2" selected>Hold and wait for recovery</option>
+                <option value="3">Invest more to buy the dip</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-top:1rem">
+              <label class="form-label">4. Emergency Fund Coverage</label>
+              <select class="form-input" id="riskEmergency">
+                <option value="1">Less than 3 months</option>
+                <option value="3" selected>3 to 6 months</option>
+                <option value="6">6+ months of living expenses</option>
+              </select>
+            </div>
+            <button type="submit" class="btn-primary" style="width:100%;margin-top:1.5rem">
+              <i class="fas fa-wand-magic-sparkles"></i> Analyze Risk Profile
+            </button>
+          </form>
+        </div>
+        <div class="glass-card recommendation-results-card">
+          <div class="result-header">
+            <h3>Your Asset Allocation Recommendation</h3>
+            <span class="badge-profile" id="riskProfileBadge">MODERATE</span>
+          </div>
+          <div class="recommendation-content" id="recommendationContent">
+            <canvas id="recommendationChart" height="200"></canvas>
+            <div class="rebalance-advice-box" id="rebalanceAdviceBox">
+              <ul class="advice-list" id="adviceList">
+                <li>Strategic Asset Allocation: Equity 55%, Debt 25%, Gold 10%, Cash 10%.</li>
+                <li>Consider rebalancing fresh monthly SIPs towards Fixed Income / Corporate Debt.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 4. SECURITY & FORECAST PAGE ========== -->
+    <div class="page" id="page-security">
+      <div class="page-toolbar">
+        <h2 class="page-sub-title"><i class="fas fa-shield-halved" style="color:var(--color-indigo)"></i> Future Financial Security & Wealth Forecast</h2>
+      </div>
+      <div class="security-grid">
+        <div class="glass-card security-score-card">
+          <h3>Financial Security Score</h3>
+          <div class="sec-score-display">
+            <div class="sec-score-number" id="secScoreVal">78</div>
+            <div class="sec-score-max">/ 100</div>
+          </div>
+          <div class="sec-breakdown-list">
+            <div class="sec-item"><span>Emergency Fund</span><strong>85%</strong></div>
+            <div class="sec-item"><span>Debt Protection</span><strong>72%</strong></div>
+            <div class="sec-item"><span>Goal Readiness</span><strong>80%</strong></div>
+            <div class="sec-item"><span>Retirement Preparedness</span><strong>65%</strong></div>
+            <div class="sec-item"><span>Asset Diversification</span><strong>75%</strong></div>
+          </div>
+        </div>
+        <div class="glass-card forecast-card">
+          <h3><i class="fas fa-crystal-ball"></i> Wealth Simulator (2026 - 2040)</h3>
+          <div class="form-grid" style="margin-top:0.75rem;margin-bottom:1rem">
+            <div class="form-group">
+              <label class="form-label">Annual Income Growth (%)</label>
+              <input type="number" class="form-input" id="simIncomeGrowth" value="8" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expense Inflation (%)</label>
+              <input type="number" class="form-input" id="simInflation" value="6" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expected Return (%)</label>
+              <input type="number" class="form-input" id="simReturn" value="10" />
+            </div>
+          </div>
+          <button class="btn-primary" style="margin-bottom:1rem" onclick="runWealthForecast()">Update Forecast</button>
+          <canvas id="wealthForecastChart" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 5. PAN & INCOME VERIFICATION PAGE ========== -->
+    <div class="page" id="page-verification">
+      <div class="page-toolbar">
+        <h2 class="page-sub-title"><i class="fas fa-id-card" style="color:var(--color-blue)"></i> PAN & Income Verification</h2>
+      </div>
+      <div class="verification-grid">
+        <div class="glass-card pan-card">
+          <div class="section-header-row">
+            <h3>PAN Card Verification</h3>
+            <span class="verification-status-badge" id="panStatusBadge" style="background:rgba(255,255,255,0.06);color:var(--text-muted)"><i class="fas fa-shield-halved"></i> Not Verified</span>
+          </div>
+          <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.25rem">Enter authentic 10-character PAN number matching your official full name.</p>
+          <form id="panForm" onsubmit="event.preventDefault(); verifyPanCard();" style="margin-top:1rem">
+            <div class="form-group">
+              <label class="form-label">Permanent Account Number (PAN)</label>
+              <input type="text" class="form-input" id="panNumberInput" placeholder="e.g., ABCPP1234F" value="" maxlength="10" autocomplete="off" />
+            </div>
+            <div class="form-group" style="margin-top:0.75rem">
+              <label class="form-label">Full Name (as per Income Tax Records)</label>
+              <input type="text" class="form-input" id="panNameInput" value="Ritik Pandey" />
+            </div>
+            <button type="submit" class="btn-primary" style="margin-top:1rem;width:100%"><i class="fas fa-shield-check"></i> Verify PAN with ITD Registry</button>
+          </form>
+        </div>
+
+        <div class="glass-card income-verification-card">
+          <div class="section-header-row">
+            <h3>Verified Income Profile</h3>
+            <button class="btn-primary" onclick="openAddIncomeModal()"><i class="fas fa-plus"></i> Add Income Source</button>
+          </div>
+          <div class="income-sources-list" id="incomeSourcesList" style="margin-top:1rem">
+            <!-- Dynamic income sources -->
+          </div>
+          <div class="income-total-bar">
+            <span>Verified Total Monthly Income:</span>
+            <strong class="green" id="verifiedTotalIncome">₹65,000</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 6. TAX LINE MATCHER PAGE ========== -->
+    <div class="page" id="page-taxmatcher">
+      <div class="page-toolbar">
+        <div>
+          <h2 class="page-sub-title"><i class="fas fa-file-invoice-dollar" style="color:var(--color-purple)"></i> Tax Line Matcher (FY 2024-25 / AY 2025-26)</h2>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem">AI-powered Income Tax deduction scanner, Section 80C/80D auto-matcher & regime optimizer</p>
+        </div>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+          <button class="btn-secondary" onclick="autoMatchTransactionsToTaxLines()"><i class="fas fa-wand-magic-sparkles"></i> Auto-Match Transactions</button>
+          <button class="btn-primary" onclick="openAddTaxLineModal()"><i class="fas fa-plus"></i> Add Tax Line</button>
+          <button class="btn-secondary" onclick="exportTaxReport()"><i class="fas fa-download"></i> ITR Schedule</button>
+        </div>
+      </div>
+
+      <!-- Top Summary Metrics Grid -->
+      <div class="tax-matcher-summary-grid">
+        <div class="glass-card tax-summary-mini-card">
+          <span class="tax-summary-mini-label">Gross Total Income</span>
+          <div class="tax-summary-mini-val" id="taxGrossIncome">₹10,80,000</div>
+          <span class="tax-summary-mini-sub"><i class="fas fa-circle-check"></i> Salary + Freelance + Gains</span>
+        </div>
+        <div class="glass-card tax-summary-mini-card">
+          <span class="tax-summary-mini-label">Total Matched Deductions</span>
+          <div class="tax-summary-mini-val" id="taxTotalDeductions" style="color:var(--color-primary-light)">₹2,85,000</div>
+          <span class="tax-summary-mini-sub"><i class="fas fa-shield"></i> 80C + 80D + 80CCD + HRA</span>
+        </div>
+        <div class="glass-card tax-summary-mini-card">
+          <span class="tax-summary-mini-label">New Regime Tax Liability</span>
+          <div class="tax-summary-mini-val" id="taxNewRegimeVal" style="color:var(--color-green)">₹33,800</div>
+          <span class="tax-summary-mini-sub" style="color:var(--color-green)"><i class="fas fa-bolt"></i> ₹75K Std Ded Applied</span>
+        </div>
+        <div class="glass-card tax-summary-mini-card">
+          <span class="tax-summary-mini-label">Old Regime Tax Liability</span>
+          <div class="tax-summary-mini-val" id="taxOldRegimeVal" style="color:var(--color-orange)">₹38,480</div>
+          <span class="tax-summary-mini-sub" style="color:var(--text-muted)">After ₹2.85L Deductions</span>
+        </div>
+      </div>
+
+      <!-- Old vs New Regime Comparison & AI Recommendation Box -->
+      <div class="tax-regime-comparison-box">
+        <div class="glass-card tax-regime-card recommended" id="newRegimeCard">
+          <span class="regime-rec-badge">⭐ Recommended Regime</span>
+          <h4 style="font-size:1.05rem;color:var(--color-green)"><i class="fas fa-bolt"></i> New Tax Regime (Section 115BAC)</h4>
+          <div style="font-size:0.8rem;color:var(--text-secondary)">Standard deduction increased to ₹75,000. Tax Slabs: 0-3L (0%), 3-7L (5%), 7-10L (10%), 10-12L (15%). Income up to ₹7.75L is 100% Tax-Free under 87A rebate.</div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:auto;padding-top:0.5rem;border-top:1px solid var(--border-glass)">
+            <span>Net Tax Payable:</span>
+            <strong style="font-size:1.3rem;color:var(--color-green)" id="newRegimePayable">₹33,800</strong>
+          </div>
+        </div>
+
+        <div class="glass-card tax-regime-card" id="oldRegimeCard">
+          <h4 style="font-size:1.05rem;color:var(--text-primary)"><i class="fas fa-file-invoice"></i> Old Tax Regime (With Deductions)</h4>
+          <div style="font-size:0.8rem;color:var(--text-secondary)">Utilizes Section 80C (₹1.5L), 80D Health (₹25k), 80CCD NPS (₹50k), Section 24(b) Home Loan Interest (₹2L), and HRA Exemption.</div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:auto;padding-top:0.5rem;border-top:1px solid var(--border-glass)">
+            <span>Net Tax Payable:</span>
+            <strong style="font-size:1.3rem;color:var(--text-primary)" id="oldRegimePayable">₹38,480</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 80C / 80D / 80CCD Utilization Trackers -->
+      <div class="tax-section-bars-grid">
+        <div class="glass-card tax-section-bar-card">
+          <div class="tax-sec-title">
+            <span>Section 80C (ELSS, EPF, PPF, LIC)</span>
+            <span class="tax-section-badge tax-sec-80c" id="badge80C">₹1,50,000 / ₹1,50,000 (100%)</span>
+          </div>
+          <div class="budget-bar-track" style="margin-top:0.3rem">
+            <div class="budget-bar-fill" id="fill80C" style="width:100%;background:var(--gradient-primary)"></div>
+          </div>
+          <span class="tax-sec-cap">Max Limit: ₹1,50,000 • Fully Utilized</span>
+        </div>
+
+        <div class="glass-card tax-section-bar-card">
+          <div class="tax-sec-title">
+            <span>Section 80D (Health Insurance)</span>
+            <span class="tax-section-badge tax-sec-80d" id="badge80D">₹25,000 / ₹25,000 (100%)</span>
+          </div>
+          <div class="budget-bar-track" style="margin-top:0.3rem">
+            <div class="budget-bar-fill" id="fill80D" style="width:100%;background:var(--gradient-green)"></div>
+          </div>
+          <span class="tax-sec-cap">Max ₹25,000 Self/Family + ₹50,000 Parents</span>
+        </div>
+
+        <div class="glass-card tax-section-bar-card">
+          <div class="tax-sec-title">
+            <span>Section 80CCD(1B) (NPS Tier-1)</span>
+            <span class="tax-section-badge tax-sec-80ccd" id="badge80CCD">₹35,000 / ₹50,000 (70%)</span>
+          </div>
+          <div class="budget-bar-track" style="margin-top:0.3rem">
+            <div class="budget-bar-fill" id="fill80CCD" style="width:70%;background:linear-gradient(135deg,#f59e0b,#fbbf24)"></div>
+          </div>
+          <span class="tax-sec-cap">Max ₹50,000 Additional NPS Deduction • ₹15,000 remaining</span>
+        </div>
+      </div>
+
+      <!-- Matched Transactions vs Tax Lines Table -->
+      <div class="glass-card tax-matching-table-card">
+        <div class="section-header-row" style="margin-bottom:1rem">
+          <div>
+            <h3><i class="fas fa-list-check" style="color:var(--color-primary-light)"></i> Matched Tax Deductions & Receipts</h3>
+            <span style="font-size:0.75rem;color:var(--text-muted)">Live itemized deduction lines mapped to Income Tax Act sections</span>
+          </div>
+        </div>
+
+        <div class="tax-table-row header">
+          <span>Transaction / Expense Item</span>
+          <span>Amount (₹)</span>
+          <span>Matched Tax Section</span>
+          <span>Eligible Deduction</span>
+          <span>Action</span>
+        </div>
+
+        <div id="taxMatchedLinesList">
+          <!-- Dynamic Tax Line Items -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 7. FINANCE-OPS & BOOKS CLOSER (MULTI-SOURCE RECONCILIATION & CASH FORECASTER) ========== -->
+    <div class="page" id="page-financeops">
+      <div class="page-toolbar">
+        <div>
+          <h2 class="page-sub-title"><i class="fas fa-calculator" style="color:var(--color-cyan)"></i> Autonomous Finance-Ops & Cash Position Engine</h2>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem">2026 Verification Engine: Multi-source 3-way reconciliation (50+ synthetic batch), Settlement Q&A dispute resolver, and Forward cash forecaster.</p>
+        </div>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+          <button class="btn-primary" id="btnRunFinanceOps" onclick="runFullReconciliationBatch()"><i class="fas fa-play"></i> Run 50+ Record Ops Loop</button>
+          <button class="btn-secondary" onclick="exportOpsAuditReport()"><i class="fas fa-file-export"></i> Export Audit Trail</button>
+        </div>
+      </div>
+
+      <!-- Top Operational Metrics Bar -->
+      <div class="tax-matcher-summary-grid" style="margin-bottom:1.25rem">
+        <div class="glass-card tax-summary-mini-card">
+          <span class="tax-summary-mini-label">Batch Throughput</span>
+          <div class="tax-summary-mini-val" id="opsTotalProcessed">52 Records</div>
+          <span class="tax-summary-mini-sub" style="color:var(--color-cyan)"><i class="fas fa-database"></i> 3 Sources (Ledger, Bank, Gateway)</span>
+        </div>
+        <div class="glass-card tax-summary-mini-card">
+          <span class="tax-summary-mini-label">Reconciliation Match Rate</span>
+          <div class="tax-summary-mini-val" id="opsMatchRate" style="color:var(--color-green)">94.2%</div>
+          <span class="tax-summary-mini-sub" style="color:var(--color-green)"><i class="fas fa-circle-check"></i> 49 Matched / 52 Total</span>
+        </div>
+        <div class="glass-card tax-summary-mini-card">
+          <span class="tax-summary-mini-label">Unresolved Exceptions</span>
+          <div class="tax-summary-mini-val" id="opsExceptionsCount" style="color:var(--color-red)">3 Exceptions</div>
+          <span class="tax-summary-mini-sub" style="color:var(--color-orange)"><i class="fas fa-triangle-exclamation"></i> Honest Audit Queue</span>
+        </div>
+        <div class="glass-card tax-summary-mini-card">
+          <span class="tax-summary-mini-label">Closing Cash Position</span>
+          <div class="tax-summary-mini-val" id="opsClosingCash" style="color:var(--color-indigo)">₹8,42,500</div>
+          <span class="tax-summary-mini-sub" style="color:var(--text-muted)"><i class="fas fa-chart-line"></i> 90-Day Rolling Buffer</span>
+        </div>
+      </div>
+
+      <!-- Ops Sub-Navigation Tabs -->
+      <div class="ops-tabs-bar" style="display:flex;gap:0.5rem;margin-bottom:1.25rem;border-bottom:1px solid var(--border-glass);padding-bottom:0.75rem;overflow-x:auto">
+        <button class="ops-tab-btn active" id="tabBtn-recon" onclick="switchOpsTab('recon')"><i class="fas fa-shuffle"></i> 3-Way Reconciliation (52 Batch)</button>
+        <button class="ops-tab-btn" id="tabBtn-forecast" onclick="switchOpsTab('forecast')"><i class="fas fa-chart-line"></i> Forward Cash Forecaster</button>
+        <button class="ops-tab-btn" id="tabBtn-settlement" onclick="switchOpsTab('settlement')"><i class="fas fa-comments-dollar"></i> Settlement Q&A Agent</button>
+        <button class="ops-tab-btn" id="tabBtn-taxaudit" onclick="switchOpsTab('taxaudit')"><i class="fas fa-receipt"></i> Batch Tax-Line Matcher</button>
+      </div>
+
+      <!-- TAB 1: 3-WAY RECONCILIATION & EXCEPTION QUEUE -->
+      <div class="ops-tab-content" id="opsTab-recon">
+        <div class="glass-card" style="padding:1.5rem;margin-bottom:1.25rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem">
+            <div>
+              <h3 style="font-size:1.1rem;color:var(--text-primary)"><i class="fas fa-code-compare" style="color:var(--color-cyan)"></i> Multi-Source Reconciliation Stream</h3>
+              <span style="font-size:0.75rem;color:var(--text-muted)">Cross-matched across Internal Books (ERP), Bank Clearing Feed (HDFC/ICICI), and Payment Gateway (Stripe/Razorpay)</span>
+            </div>
+            <div class="filter-chips" style="display:flex;gap:0.4rem">
+              <button class="chip-btn active" id="reconFilterAll" onclick="filterReconBatch('all')">All Records (52)</button>
+              <button class="chip-btn" id="reconFilterMatched" onclick="filterReconBatch('matched')"><i class="fas fa-check" style="color:var(--color-green)"></i> Matched (49)</button>
+              <button class="chip-btn" id="reconFilterExceptions" onclick="filterReconBatch('exceptions')" style="border-color:rgba(239,68,68,0.4);color:#fca5a5"><i class="fas fa-triangle-exclamation" style="color:var(--color-red)"></i> Exceptions (3)</button>
+            </div>
+          </div>
+
+          <!-- Reconciliation Table -->
+          <div class="recon-table-wrapper" style="overflow-x:auto">
+            <div class="recon-table-header" style="display:grid;grid-template-columns:1fr 1.2fr 1.2fr 1fr 0.8fr 1.8fr;padding:0.75rem 1rem;background:rgba(255,255,255,0.02);border-radius:var(--radius-sm);font-size:0.75rem;color:var(--text-muted);font-weight:600">
+              <span>Internal Ledger ID</span>
+              <span>Bank Statement UTR</span>
+              <span>Payment Gateway Ref</span>
+              <span>Amount (₹)</span>
+              <span>Delta</span>
+              <span>Reconciliation Status & Reason</span>
+            </div>
+            <div id="reconRecordsList" style="display:flex;flex-direction:column;gap:0.4rem;margin-top:0.5rem;max-height:480px;overflow-y:auto;padding-right:0.3rem">
+              <!-- Dynamic 52 batch rows -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: FORWARD CASH FORECASTER -->
+      <div class="ops-tab-content" id="opsTab-forecast" style="display:none">
+        <div class="glass-card" style="padding:1.5rem;margin-bottom:1.25rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem">
+            <div>
+              <h3 style="font-size:1.1rem;color:var(--text-primary)"><i class="fas fa-arrow-trend-up" style="color:var(--color-indigo)"></i> Forward Rolling Cash Forecaster (Cash Position)</h3>
+              <span style="font-size:0.75rem;color:var(--text-muted)">Deterministic & stochastic projection of cash reserves with 95% confidence variance bounds</span>
+            </div>
+            <div class="period-selector">
+              <button class="period-btn active" id="forecastBtn30" onclick="setCashForecastRange('30d')">30 Days</button>
+              <button class="period-btn" id="forecastBtn60" onclick="setCashForecastRange('60d')">60 Days</button>
+              <button class="period-btn" id="forecastBtn90" onclick="setCashForecastRange('90d')">90 Days</button>
+            </div>
+          </div>
+
+          <div style="height:320px;position:relative;margin-bottom:1.5rem">
+            <canvas id="cashForecastChart"></canvas>
+          </div>
+
+          <div class="tax-matcher-summary-grid">
+            <div class="glass-card tax-summary-mini-card">
+              <span class="tax-summary-mini-label">Projected Daily Net Inflow</span>
+              <div class="tax-summary-mini-val" style="color:var(--color-green)">+₹1,750 / day</div>
+              <span class="tax-summary-mini-sub">After all scheduled debits</span>
+            </div>
+            <div class="glass-card tax-summary-mini-card">
+              <span class="tax-summary-mini-label">Monthly Fixed Burn Rate</span>
+              <div class="tax-summary-mini-val" style="color:var(--color-orange)">₹37,500 / mo</div>
+              <span class="tax-summary-mini-sub">Rent + Utilities + Subscriptions</span>
+            </div>
+            <div class="glass-card tax-summary-mini-card">
+              <span class="tax-summary-mini-label">Liquidity Runway Buffer</span>
+              <div class="tax-summary-mini-val" style="color:var(--color-cyan)">14.2 Months</div>
+              <span class="tax-summary-mini-sub">Zero-income stress survival</span>
+            </div>
+            <div class="glass-card tax-summary-mini-card">
+              <span class="tax-summary-mini-label">Forecast Confidence</span>
+              <div class="tax-summary-mini-val" style="color:var(--color-primary-light)">95.8%</div>
+              <span class="tax-summary-mini-sub">Monte Carlo model variance</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: SETTLEMENT Q&A AGENT -->
+      <div class="ops-tab-content" id="opsTab-settlement" style="display:none">
+        <div class="glass-card chat-full-container" style="height:620px">
+          <div class="chat-header-bar">
+            <div class="chat-bot-avatar" style="background:rgba(6,182,212,0.15);color:var(--color-cyan)">
+              <i class="fas fa-handshake-angle"></i>
+            </div>
+            <div>
+              <div class="chat-bot-title">FinanceFlow Settlement & Clearing Operations Agent</div>
+              <div class="chat-bot-status"><span class="status-dot"></span> Live Operations & Dispute Resolver (T+1/T+2 Cycles)</div>
+            </div>
+          </div>
+
+          <div class="chat-messages-log" id="settlementChatLog">
+            <div class="chat-bubble bot">Hello! I am your <strong>Settlement & Finance-Ops Operations Agent</strong>. I audit multi-source clearing discrepancies, diagnose gateway settlement delays, explain batch fee cutoffs, and propose journal adjustments for un-reconciled transactions.
+
+Click a dispute query below or ask any operational finance question:</div>
+          </div>
+
+          <div class="chat-suggestions" style="margin:0.75rem 0">
+            <button class="chip-btn" onclick="askSettlementQuestion('Why is Tx #1042 un-reconciled?')">🔍 Why is Tx #1042 un-reconciled?</button>
+            <button class="chip-btn" onclick="askSettlementQuestion('Explain the ₹42.50 fee discrepancy on Tx #1048')">⚠️ Explain ₹42.50 fee discrepancy on Tx #1048</button>
+            <button class="chip-btn" onclick="askSettlementQuestion('What is our projected cash position in 60 days?')">📈 Projected cash position in 60 days?</button>
+            <button class="chip-btn" onclick="askSettlementQuestion('Propose journal adjustment for missing invoice Tx #1051')">📝 Journal entry for Tx #1051</button>
+          </div>
+
+          <form class="chat-input-row" onsubmit="event.preventDefault(); sendSettlementChat();">
+            <input type="text" id="settlementChatInput" placeholder="Ask about settlement cycles, un-reconciled items, fee variance, or cash runway..." autocomplete="off" />
+            <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i></button>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 4: BATCH TAX-LINE MATCHER -->
+      <div class="ops-tab-content" id="opsTab-taxaudit" style="display:none">
+        <div class="glass-card" style="padding:1.5rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+            <div>
+              <h3 style="font-size:1.1rem;color:var(--text-primary)"><i class="fas fa-file-invoice" style="color:var(--color-green)"></i> Batch Tax-Line Multi-Source Deductions</h3>
+              <span style="font-size:0.75rem;color:var(--text-muted)">Auto-scanned deductions and non-deductible personal outflow audit list</span>
+            </div>
+            <button class="btn-primary" onclick="switchPage('taxmatcher')"><i class="fas fa-arrow-right"></i> Open Full Tax Line Optimizer</button>
+          </div>
+
+          <div class="tax-section-bars-grid" style="margin-bottom:1rem">
+            <div class="glass-card tax-section-bar-card">
+              <div class="tax-sec-title">
+                <span>Section 80C Matched</span>
+                <span class="tax-section-badge tax-sec-80c">₹1,50,000 / ₹1,50,000</span>
+              </div>
+              <span class="tax-sec-cap">EPF + PPF + ELSS Tax Saver</span>
+            </div>
+            <div class="glass-card tax-section-bar-card">
+              <div class="tax-sec-title">
+                <span>Section 80D Health</span>
+                <span class="tax-section-badge tax-sec-80d">₹25,000 / ₹25,000</span>
+              </div>
+              <span class="tax-sec-cap">Optima Restore Health Premium</span>
+            </div>
+            <div class="glass-card tax-section-bar-card">
+              <div class="tax-sec-title">
+                <span>Section 80CCD(1B) NPS</span>
+                <span class="tax-section-badge tax-sec-80ccd">₹35,000 / ₹50,000</span>
+              </div>
+              <span class="tax-sec-cap">National Pension Scheme Tier-1</span>
+            </div>
+          </div>
+
+          <div class="recon-table-header" style="display:grid;grid-template-columns:2fr 1fr 1.5fr 1fr;padding:0.75rem 1rem;background:rgba(255,255,255,0.02);border-radius:var(--radius-sm);font-size:0.75rem;color:var(--text-muted);font-weight:600">
+            <span>Transaction Item</span>
+            <span>Amount (₹)</span>
+            <span>Tax Section Status</span>
+            <span>Deductibility</span>
+          </div>
+          <div id="opsTaxBatchList" style="display:flex;flex-direction:column;gap:0.4rem;margin-top:0.5rem;max-height:360px;overflow-y:auto">
+            <!-- Dynamic tax batch lines -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==========================================
+         PAGE: ⚡ FINTECH POWER SUITE (11 MODULES)
+         ========================================== -->
+    <div class="page" id="page-fintechsuite">
+      <div class="page-header" style="margin-bottom:1.2rem">
+        <div>
+          <h1 class="page-title" style="display:flex;align-items:center;gap:0.6rem">
+            <i class="fas fa-bolt" style="color:var(--color-purple)"></i>
+            ⚡ FinTech Power Suite
+          </h1>
+          <p class="page-subtitle">11 Advanced Enterprise Finance-Ops Tools for Consumers, Freelancers & Corporate Teams</p>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          <span class="badge" style="background:rgba(16,185,129,0.2);color:#10b981;border:1px solid rgba(16,185,129,0.3);padding:0.4rem 0.8rem;border-radius:20px;font-size:0.8rem">
+            <i class="fas fa-shield-check"></i> 11 Active AI Micro-Engines
+          </span>
+        </div>
+      </div>
+
+      <!-- FINTECH SUITE SUB-TABS NAVIGATION -->
+      <div class="fintech-tabs-nav glass-card">
+        <button class="fintech-tab-btn active" onclick="switchFintechTab('pdfparser')"><i class="fas fa-file-pdf"></i> 1. Smart PDF Parser</button>
+        <button class="fintech-tab-btn" onclick="switchFintechTab('upianomaly')"><i class="fas fa-shield-halved"></i> 2. UPI Anomaly & Ghost Subs</button>
+        <button class="fintech-tab-btn" onclick="switchFintechTab('taccounts')"><i class="fas fa-scale-balanced"></i> 3. 1-Click T-Accounts</button>
+        <button class="fintech-tab-btn" onclick="switchFintechTab('fxtracker')"><i class="fas fa-money-bill-transfer"></i> 4. FX Loss Tracker</button>
+        <button class="fintech-tab-btn" onclick="switchFintechTab('webhookchat')"><i class="fab fa-whatsapp"></i> 5. WhatsApp Webhook</button>
+        <button class="fintech-tab-btn" onclick="switchFintechTab('taxharvest')"><i class="fas fa-seedling"></i> 6. Tax-Loss Harvester</button>
+        <button class="fintech-tab-btn" onclick="switchFintechTab('cardswitcher')"><i class="fas fa-credit-card"></i> 7. Card Switcher</button>
+        <button class="fintech-tab-btn" onclick="switchFintechTab('invoicechaser')"><i class="fas fa-hourglass-half"></i> 8. AR Invoice Chaser</button>
+        <button class="fintech-tab-btn" onclick="switchFintechTab('inflationsim')"><i class="fas fa-chart-line-up"></i> 9. Inflation Goal Sim</button>
+        <button class="fintech-tab-btn" onclick="switchFintechTab('gstitc')"><i class="fas fa-receipt"></i> 10. GST 2B Reconciler</button>
+        <button class="fintech-tab-btn" onclick="switchFintechTab('splitwise')"><i class="fas fa-qrcode"></i> 11. Splitwise UPI QR</button>
+      </div>
+
+      <!-- 1. SMART PDF PARSER -->
+      <div id="subtab-pdfparser" class="fintech-subtab-pane">
+        <div class="glass-card" style="padding:1.5rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+            <div>
+              <h3 style="margin:0;font-size:1.1rem;display:flex;align-items:center;gap:0.5rem"><i class="fas fa-file-pdf" style="color:#ef4444"></i> AI PDF Bank Statement & Invoice Parser (Smart OCR)</h3>
+              <p style="margin:0.2rem 0 0 0;font-size:0.85rem;color:var(--text-muted)">Drop HDFC, SBI, ICICI statements or Amazon/Vendor receipts for instant ledger extraction.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="runPdfParserDemo()"><i class="fas fa-bolt"></i> Demo Parse (HDFC Aug Statement)</button>
+          </div>
+
+          <div id="pdfDropzone" class="glass-card" style="border:2px dashed rgba(255,255,255,0.2);padding:2rem;text-align:center;border-radius:12px;background:rgba(255,255,255,0.02);cursor:pointer" onclick="runPdfParserDemo()">
+            <i class="fas fa-cloud-arrow-up" style="font-size:2.5rem;color:var(--color-purple);margin-bottom:0.5rem"></i>
+            <div style="font-weight:600">Drag & Drop Bank Statement PDF or Vendor Receipt Here</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.2rem">Supports HDFC, ICICI, SBI, Axis Bank PDFs & Scanned JPG/PNG Receipts</div>
+          </div>
+
+          <div id="pdfExtractedResults" style="margin-top:1.5rem;display:none">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem">
+              <strong id="pdfResultTitle" style="color:#10b981"><i class="fas fa-circle-check"></i> Extracted 5 Records with 99.1% Accuracy</strong>
+              <button class="btn btn-secondary btn-sm" onclick="importExtractedToLedger()"><i class="fas fa-file-import"></i> Sync to Main Ledger</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table" style="font-size:0.85rem">
+                <thead><tr><th>Date</th><th>Merchant / Description</th><th>Category</th><th>Amount</th><th>Type</th><th>OCR Confidence</th></tr></thead>
+                <tbody id="pdfTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. UPI ANOMALY & GHOST SUBS -->
+      <div id="subtab-upianomaly" class="fintech-subtab-pane" style="display:none">
+        <div class="grid-2">
+          <div class="glass-card" style="padding:1.5rem">
+            <h3 style="font-size:1.1rem;display:flex;align-items:center;gap:0.5rem;color:#ef4444"><i class="fas fa-triangle-exclamation"></i> UPI Duplicate Payment Red-Flags</h3>
+            <p style="font-size:0.85rem;color:var(--text-muted)">Transactions charged multiple times within a 5-minute network failure window.</p>
+            <div id="upiDuplicatesList" style="display:flex;flex-direction:column;gap:0.6rem;margin-top:1rem"></div>
+          </div>
+          <div class="glass-card" style="padding:1.5rem">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <h3 style="font-size:1.1rem;display:flex;align-items:center;gap:0.5rem;color:#f59e0b"><i class="fas fa-ghost"></i> Ghost Subscriptions Detector</h3>
+              <span class="badge" style="background:rgba(245,158,11,0.2);color:#f59e0b">₹13,176 / yr Waste</span>
+            </div>
+            <p style="font-size:0.85rem;color:var(--text-muted)">Unused recurring OTT/SaaS memberships draining your account quietly.</p>
+            <div id="ghostSubsList" style="display:flex;flex-direction:column;gap:0.6rem;margin-top:1rem"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 1-CLICK T-ACCOUNTS GENERAL LEDGER -->
+      <div id="subtab-taccounts" class="fintech-subtab-pane" style="display:none">
+        <div class="glass-card" style="padding:1.5rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+            <div>
+              <h3 style="font-size:1.1rem;display:flex;align-items:center;gap:0.5rem"><i class="fas fa-scale-balanced" style="color:var(--color-purple)"></i> 1-Click Double-Entry General Ledger (T-Accounts)</h3>
+              <p style="font-size:0.85rem;color:var(--text-muted)">Automated Debit/Credit adjusting journal entries to balance reconciliation discrepancies.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="showNewJournalEntryModal()"><i class="fas fa-plus"></i> Post Journal Entry</button>
+          </div>
+          <div id="tAccountsList" style="display:flex;flex-direction:column;gap:0.8rem"></div>
+        </div>
+      </div>
+
+      <!-- 4. FX LOSS TRACKER -->
+      <div id="subtab-fxtracker" class="fintech-subtab-pane" style="display:none">
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 style="font-size:1.1rem;display:flex;align-items:center;gap:0.5rem"><i class="fas fa-money-bill-transfer" style="color:#06b6d4"></i> Cross-Border Multi-Currency FX Loss Calculator</h3>
+          <p style="font-size:0.85rem;color:var(--text-muted)">Compare Real-time Interbank FX Spot Rate against Bank Payout to identify hidden currency spread markup.</p>
+          <div style="display:flex;gap:1rem;margin:1.2rem 0;flex-wrap:wrap">
+            <div style="flex:1;min-width:200px">
+              <label style="font-size:0.8rem;color:var(--text-muted)">Foreign Amount Received</label>
+              <input type="number" id="fxForeignAmt" class="form-control" value="2500" oninput="calculateLiveFx()">
+            </div>
+            <div style="width:140px">
+              <label style="font-size:0.8rem;color:var(--text-muted)">Currency</label>
+              <select id="fxCurrency" class="form-control" onchange="calculateLiveFx()">
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+              </select>
+            </div>
+          </div>
+          <div id="fxResultCard" class="grid-3" style="margin-top:1rem"></div>
+        </div>
+      </div>
+
+      <!-- 5. WHATSAPP WEBHOOK SIMULATOR -->
+      <div id="subtab-webhookchat" class="fintech-subtab-pane" style="display:none">
+        <div class="glass-card" style="padding:1.5rem;max-width:700px;margin:0 auto">
+          <h3 style="font-size:1.1rem;display:flex;align-items:center;gap:0.5rem;color:#25d366"><i class="fab fa-whatsapp"></i> WhatsApp / Telegram Instant Expense Webhook</h3>
+          <p style="font-size:0.85rem;color:var(--text-muted)">Simulate texting your expense to the automated bot: <code>/api/fintech/webhook/chat-expense</code></p>
+          <div style="display:flex;gap:0.5rem;margin:1.2rem 0">
+            <input type="text" id="webhookInputMsg" class="form-control" placeholder="e.g. Spent 350 on Uber ride to airport" value="Spent 450 at Starbucks on coffee with team">
+            <button class="btn btn-primary" onclick="submitWebhookExpense()"><i class="fas fa-paper-plane"></i> Send</button>
+          </div>
+          <div id="webhookChatBubble" class="glass-card" style="padding:1rem;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);border-radius:12px;display:none"></div>
+        </div>
+      </div>
+
+      <!-- 6. TAX-LOSS HARVESTING -->
+      <div id="subtab-taxharvest" class="fintech-subtab-pane" style="display:none">
+        <div class="glass-card" style="padding:1.5rem">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 style="font-size:1.1rem;display:flex;align-items:center;gap:0.5rem;color:#10b981"><i class="fas fa-seedling"></i> Capital Gains Tax-Loss Harvester (FY 2025-26)</h3>
+            <span class="badge" style="background:rgba(16,185,129,0.2);color:#10b981">₹1,641.87 Tax Savings Identified</span>
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-muted)">Realize paper losses before March 31st to legally neutralize Short-Term & Long-Term Capital Gains.</p>
+          <div id="taxHarvestList" style="margin-top:1rem"></div>
+        </div>
+      </div>
+
+      <!-- 7. CREDIT CARD SWITCHER -->
+      <div id="subtab-cardswitcher" class="fintech-subtab-pane" style="display:none">
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 style="font-size:1.1rem;display:flex;align-items:center;gap:0.5rem"><i class="fas fa-credit-card" style="color:var(--color-purple)"></i> Smart Credit Card Reward & Cashback Switcher</h3>
+          <p style="font-size:0.85rem;color:var(--text-muted)">Enter merchant and order value to pick the card that maximizes your points, miles, or cashback.</p>
+          <div style="display:flex;gap:1rem;margin:1.2rem 0;flex-wrap:wrap">
+            <input type="text" id="cardMerchantInput" class="form-control" placeholder="Merchant (e.g. Swiggy, Amazon, MakeMyTrip, Zomato)" value="Swiggy" style="flex:1">
+            <input type="number" id="cardAmountInput" class="form-control" placeholder="Amount (₹)" value="1200" style="width:160px">
+            <button class="btn btn-primary" onclick="recommendBestCard()"><i class="fas fa-wand-magic-sparkles"></i> Find Best Card</button>
+          </div>
+          <div id="cardRecommendResult" style="margin-top:1rem"></div>
+        </div>
+      </div>
+
+      <!-- 8. AR INVOICE CHASER -->
+      <div id="subtab-invoicechaser" class="fintech-subtab-pane" style="display:none">
+        <div class="glass-card" style="padding:1.5rem">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 style="font-size:1.1rem;display:flex;align-items:center;gap:0.5rem;color:#f59e0b"><i class="fas fa-hourglass-half"></i> Autonomous Invoice Chaser & AR Aging</h3>
+            <span class="badge" style="background:rgba(239,68,68,0.2);color:#ef4444">₹2,47,000 Total Overdue</span>
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-muted)">Automate polite & firm collection follow-ups with 1-click WhatsApp/Email dunning links.</p>
+          <div id="arAgingList" style="margin-top:1rem"></div>
+        </div>
+      </div>
+
+      <!-- 9. INFLATION SIMULATOR -->
+      <div id="subtab-inflationsim" class="fintech-subtab-pane" style="display:none">
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 style="font-size:1.1rem;display:flex;align-items:center;gap:0.5rem"><i class="fas fa-chart-line-up" style="color:#a855f7"></i> Inflation-Adjusted Real-Cost Goal Simulator</h3>
+          <p style="font-size:0.85rem;color:var(--text-muted)">Calculate real future compounding costs with education/lifestyle inflation indices.</p>
+          <div class="grid-4" style="margin:1.2rem 0">
+            <div>
+              <label style="font-size:0.8rem;color:var(--text-muted)">Goal Title</label>
+              <input type="text" id="infGoalTitle" class="form-control" value="Child College Education">
+            </div>
+            <div>
+              <label style="font-size:0.8rem;color:var(--text-muted)">Today's Cost (₹)</label>
+              <input type="number" id="infTodayCost" class="form-control" value="3000000">
+            </div>
+            <div>
+              <label style="font-size:0.8rem;color:var(--text-muted)">Years Away</label>
+              <input type="number" id="infYears" class="form-control" value="12">
+            </div>
+            <div>
+              <label style="font-size:0.8rem;color:var(--text-muted)">Annual Inflation Rate (%)</label>
+              <input type="number" id="infRate" class="form-control" value="8.0">
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="runInflationSim()"><i class="fas fa-calculator"></i> Simulate Future Cost</button>
+          <div id="infSimResult" style="margin-top:1.2rem"></div>
+        </div>
+      </div>
+
+      <!-- 10. GST ITC RECONCILER -->
+      <div id="subtab-gstitc" class="fintech-subtab-pane" style="display:none">
+        <div class="glass-card" style="padding:1.5rem">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 style="font-size:1.1rem;display:flex;align-items:center;gap:0.5rem"><i class="fas fa-receipt" style="color:#06b6d4"></i> Vendor GST 2B vs 3B Input Tax Credit (ITC) Reconciler</h3>
+            <span class="badge" style="background:rgba(16,185,129,0.2);color:#10b981">88.8% Claimable ITC Matched</span>
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-muted)">Flag non-compliant vendors whose invoices are missing in GSTR-2B before releasing payment.</p>
+          <div id="gstItcList" style="margin-top:1rem"></div>
+        </div>
+      </div>
+
+      <!-- 11. SPLITWISE UPI QR -->
+      <div id="subtab-splitwise" class="fintech-subtab-pane" style="display:none">
+        <div class="glass-card" style="padding:1.5rem">
+          <h3 style="font-size:1.1rem;display:flex;align-items:center;gap:0.5rem"><i class="fas fa-qrcode" style="color:var(--color-purple)"></i> Splitwise Group Expense & Dynamic UPI QR Generator</h3>
+          <p style="font-size:0.85rem;color:var(--text-muted)">Split bills with friends and generate instant dynamic UPI payment QR codes.</p>
+          <div class="grid-3" style="margin:1.2rem 0">
+            <div>
+              <label style="font-size:0.8rem;color:var(--text-muted)">Trip / Expense Name</label>
+              <input type="text" id="splitTripName" class="form-control" value="Goa Vacation Trip">
+            </div>
+            <div>
+              <label style="font-size:0.8rem;color:var(--text-muted)">Total Bill Amount (₹)</label>
+              <input type="number" id="splitTotalAmount" class="form-control" value="16000">
+            </div>
+            <div>
+              <label style="font-size:0.8rem;color:var(--text-muted)">Paid By</label>
+              <input type="text" id="splitPayer" class="form-control" value="Ritik Pandey">
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="runSplitwiseEngine()"><i class="fas fa-bolt"></i> Split & Generate UPI QR</button>
+          <div id="splitwiseResult" style="margin-top:1.2rem"></div>
+        </div>
+      </div>
+
+    </div>
+
   </main>
+
+  <!-- ========== FLOATING AI CHATBOT WIDGET ========== -->
+  <button class="floating-chat-btn" id="chatFloatingBtn" onclick="toggleFloatingChat()">
+    <i class="fas fa-robot"></i>
+  </button>
+
+  <div class="floating-chat-drawer glass-card" id="chatFloatingDrawer" style="display:none">
+    <div class="chat-drawer-header">
+      <div style="display:flex;align-items:center;gap:0.5rem">
+        <i class="fas fa-robot" style="color:var(--color-purple)"></i>
+        <strong>FinanceFlow AI Assistant</strong>
+      </div>
+      <button class="modal-close" onclick="toggleFloatingChat()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="chat-drawer-messages" id="drawerChatLog">
+      <div class="chat-bubble bot">Hello! Ask me any financial question — budget planning, home affordability, investment suggestions, stocks, or tax planning.</div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="drawerChatInput" placeholder="Ask any financial question..." onkeydown="if(event.key==='Enter') sendDrawerChatMessage()" />
+      <button class="btn-primary" onclick="sendDrawerChatMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
 
   <!-- ========== ADD TRANSACTION MODAL ========== -->
   <div class="modal-overlay" id="addTxModal" style="display:none">
@@ -474,6 +1342,538 @@
           <i class="fas fa-plus"></i> Add Transaction
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ========== ADD INVESTMENT MODAL ========== -->
+  <div class="modal-overlay" id="addInvestmentModal" style="display:none">
+    <div class="modal-box glass-card" style="max-width:560px">
+      <div class="modal-header">
+        <div>
+          <h3><i class="fas fa-chart-line" style="color:var(--color-green)"></i> Add Investment to Portfolio</h3>
+          <span style="font-size:0.75rem;color:var(--color-green)">Live NSE/BSE Market Data & Auto-Fill</span>
+        </div>
+        <button class="modal-close" onclick="document.getElementById('addInvestmentModal').style.display='none'"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom:1.25rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+            <label class="form-label" style="margin-bottom:0">🔥 Live Market Catalog <span class="stock-catalog-count" id="stockCatalogCountBadge">120+ Assets</span></label>
+            <span style="font-size:0.7rem;color:var(--color-primary-light)">Real-time NSE/BSE & Global Rates</span>
+          </div>
+
+          <div class="stock-search-container">
+            <i class="fas fa-search stock-search-icon"></i>
+            <input type="text" class="form-input stock-search-input" id="stockFilterInput" placeholder="Search 100+ stocks, funds, cryptos (e.g. Tata, Adani, HDFC, Zomato, Nifty)..." oninput="filterStockCatalog(this.value)" autocomplete="off" />
+          </div>
+
+          <select class="form-input" id="invCatalogSelect" onchange="onSelectMarketCatalog(this.value)" style="margin-top:0.35rem">
+            <option value="">-- Click to choose from 100+ Verified Stocks, ETFs & Mutual Funds --</option>
+          </select>
+        </div>
+
+        <form id="addInvestmentForm" onsubmit="event.preventDefault(); saveInvestment();">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Asset Type</label>
+              <select class="form-input" id="invAssetType">
+                <option value="Stock">Stock (Equity)</option>
+                <option value="ETF">ETF / Index Fund</option>
+                <option value="Mutual Fund">Mutual Fund</option>
+                <option value="Gold">Gold / SGB</option>
+                <option value="Crypto">Crypto Asset</option>
+                <option value="FD">Fixed Deposit</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Symbol / Ticker</label>
+              <input type="text" class="form-input" id="invTicker" placeholder="e.g., TATAMOTORS, RELIANCE" oninput="onTickerManualInput(this.value)" required />
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label">Company / Fund Name</label>
+              <input type="text" class="form-input" id="invName" placeholder="e.g., Tata Motors Passenger Vehicles" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Quantity / Units</label>
+              <input type="number" class="form-input" id="invQty" placeholder="e.g., 20" min="0.01" step="any" oninput="recalcModalInvestmentTotal()" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Avg. Buy Price (₹)</label>
+              <input type="number" class="form-input" id="invBuyPrice" placeholder="e.g., 650" min="0.01" step="any" oninput="recalcModalInvestmentTotal()" required />
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label">Current Market LTP Price (₹)</label>
+              <input type="number" class="form-input" id="invCurrentPrice" placeholder="e.g., 985.30" min="0.01" step="any" oninput="recalcModalInvestmentTotal()" required />
+            </div>
+          </div>
+
+          <div class="modal-inv-summary-box" style="background:rgba(255,255,255,0.03);border:1px solid var(--border-glass);border-radius:var(--radius-sm);padding:0.875rem 1rem;margin-top:1rem;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <span style="font-size:0.75rem;color:var(--text-muted);display:block">Total Investment Value</span>
+              <strong style="font-size:1.1rem;color:var(--color-green);font-family:'Space Grotesk',sans-serif" id="invModalTotalValue">₹0</strong>
+            </div>
+            <div style="text-align:right">
+              <span style="font-size:0.75rem;color:var(--text-muted);display:block">Expected Profit / Loss</span>
+              <strong style="font-size:0.95rem;color:var(--text-primary);font-family:'Space Grotesk',sans-serif" id="invModalPL">0.0%</strong>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width:100%;margin-top:1.25rem">
+            <i class="fas fa-plus"></i> Save to Portfolio
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== ADD INCOME SOURCE MODAL ========== -->
+  <div class="modal-overlay" id="addIncomeModal" style="display:none">
+    <div class="modal-box glass-card">
+      <div class="modal-header">
+        <h3><i class="fas fa-id-card-clip" style="color:var(--color-blue)"></i> Add Verified Income Stream</h3>
+        <button class="modal-close" onclick="document.getElementById('addIncomeModal').style.display='none'"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="addIncomeForm" onsubmit="event.preventDefault(); saveIncomeSource();">
+          <div class="form-grid">
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label">Income Source Name / Employer</label>
+              <input type="text" class="form-input" id="incSourceName" placeholder="e.g., Senior Tech Consultant, Upwork Client" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select class="form-input" id="incCategory">
+                <option value="Salary">Salary (Full-time)</option>
+                <option value="Freelancing">Freelancing / Gig</option>
+                <option value="Business">Business / Trading</option>
+                <option value="Rental">Rental Property</option>
+                <option value="Investments">Dividends & Capital Gains</option>
+                <option value="Other">Other Verified Income</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Monthly Amount (₹)</label>
+              <input type="number" class="form-input" id="incAmount" placeholder="e.g., 60000" min="100" required />
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label">Verification Proof Document</label>
+              <select class="form-input" id="incDocType">
+                <option value="Salary Slip">Latest 3 Months Salary Slips (Verified ✓)</option>
+                <option value="Bank Statement">Bank Account Statement (6 Months)</option>
+                <option value="Form 16">Form 16 / TDS Certificate</option>
+                <option value="ITR Acknowledgement">ITR-V Income Tax Return Ack</option>
+                <option value="Client Invoices">GST Verified Client Invoices</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary" style="width:100%;margin-top:1.25rem">
+            <i class="fas fa-shield-check"></i> Verify & Add Income Stream
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== ADD TAX LINE MODAL ========== -->
+  <div class="modal-overlay" id="addTaxLineModal" style="display:none">
+    <div class="modal-box glass-card" style="max-width:520px">
+      <div class="modal-header">
+        <div>
+          <h3><i class="fas fa-file-invoice-dollar" style="color:var(--color-purple)"></i> Add Tax Deduction Line</h3>
+          <span style="font-size:0.75rem;color:var(--color-purple)">Link Expense / Investment to Income Tax Section</span>
+        </div>
+        <button class="modal-close" onclick="document.getElementById('addTaxLineModal').style.display='none'"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="addTaxLineForm" onsubmit="event.preventDefault(); saveTaxLine();">
+          <div class="form-grid">
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label">Item / Receipt Description</label>
+              <input type="text" class="form-input" id="taxLineDesc" placeholder="e.g. PPF Deposit, HDFC Ergo Health Insurance, NPS" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Eligible Tax Section</label>
+              <select class="form-input" id="taxLineSection" required>
+                <option value="80C">Section 80C (PPF, EPF, ELSS, LIC, Tuition Fee)</option>
+                <option value="80D">Section 80D (Health Insurance Premium)</option>
+                <option value="80CCD(1B)">Section 80CCD(1B) (NPS Additional ₹50k)</option>
+                <option value="24(b)">Section 24(b) (Home Loan Interest up to ₹2L)</option>
+                <option value="HRA">Section 10(13A) (House Rent Allowance HRA)</option>
+                <option value="80E">Section 80E (Higher Education Loan Interest)</option>
+                <option value="80G">Section 80G (Charitable Donations)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Amount (₹)</label>
+              <input type="number" class="form-input" id="taxLineAmount" placeholder="e.g. 25000" min="1" step="any" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Receipt / Document Proof</label>
+              <select class="form-input" id="taxLineDoc">
+                <option value="Bank Statement">Bank Statement</option>
+                <option value="Premium Receipt">Insurance Premium Receipt</option>
+                <option value="Form 16">Form 16 / Part B</option>
+                <option value="Rent Agreement & Receipts">Rent Agreement & Receipts</option>
+                <option value="NPS PRAN Statement">NPS PRAN Statement</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Financial Year</label>
+              <input type="text" class="form-input" id="taxLineFY" value="FY 2024-25" readonly />
+            </div>
+          </div>
+          <button type="submit" class="btn-primary" style="width:100%;margin-top:1.25rem">
+            <i class="fas fa-plus"></i> Match & Save Tax Line
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== OAUTH2 & MOBILE AUTHENTICATION MODAL ========== -->
+  <div class="modal-overlay" id="authModal" style="display:none">
+    <div class="modal-card glass-card" style="max-width:480px;width:95%;padding:2rem;border-radius:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
+        <div>
+          <h2 style="font-size:1.25rem;display:flex;align-items:center;gap:0.5rem">
+            <i class="fas fa-shield-halved" style="color:var(--color-purple)"></i>
+            Enterprise Security & OAuth2
+          </h2>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.2rem">Auto Sign-In (Existing) or Sign-Up (New Accounts)</p>
+        </div>
+        <button class="modal-close" onclick="closeOAuth2Modal()"><i class="fas fa-xmark"></i></button>
+      </div>
+
+      <!-- Quick OAuth2 / Mobile Switcher Tabs -->
+      <div style="display:flex;gap:0.4rem;background:rgba(255,255,255,0.04);padding:0.3rem;border-radius:8px;margin-bottom:1.2rem">
+        <button id="authTabSocialBtn" class="btn btn-sm btn-primary" style="flex:1;justify-content:center" onclick="switchAuthTab('social')">
+          <i class="fab fa-google"></i> Google / Social
+        </button>
+        <button id="authTabPhoneBtn" class="btn btn-sm btn-secondary" style="flex:1;justify-content:center" onclick="switchAuthTab('phone')">
+          <i class="fas fa-mobile-screen"></i> Mobile OTP
+        </button>
+        <button id="authTabPassBtn" class="btn btn-sm btn-secondary" style="flex:1;justify-content:center" onclick="switchAuthTab('password')">
+          <i class="fas fa-key"></i> Password
+        </button>
+      </div>
+
+      <!-- TAB 1: SOCIAL OAUTH2 & GOOGLE SERVICES -->
+      <div id="authPaneSocial" style="display:flex;flex-direction:column;gap:0.7rem">
+        
+        <!-- Official Google Identity Services SDK Render Target -->
+        <div id="gsiButtonWrapper" style="display:flex;justify-content:center;min-height:44px;align-items:center">
+          <div id="gsiButtonContainer"></div>
+        </div>
+
+        <button class="btn" style="width:100%;background:#ffffff;color:#0f172a;border:none;font-weight:600;display:flex;align-items:center;justify-content:center;gap:0.6rem;padding:0.75rem;box-shadow:0 4px 12px rgba(0,0,0,0.15)" onclick="openGoogleAccountChooser()">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+          Google Cloud Identity (Account Chooser & Scopes)
+        </button>
+
+        <button class="btn" style="width:100%;background:#24292e;color:#ffffff;border:1px solid rgba(255,255,255,0.15);font-weight:600;display:flex;align-items:center;justify-content:center;gap:0.6rem;padding:0.75rem" onclick="loginWithOAuth2('GitHub')">
+          <i class="fab fa-github" style="font-size:1.1rem"></i>
+          Continue with GitHub
+        </button>
+
+        <button class="btn btn-secondary" style="width:100%;font-weight:600;display:flex;align-items:center;justify-content:center;gap:0.6rem;padding:0.75rem" onclick="loginWithMobilePkce()">
+          <i class="fas fa-qrcode" style="color:var(--color-purple)"></i>
+          Authorize Native Mobile App (PKCE S256)
+        </button>
+
+        <!-- Google Cloud Client ID Configuration Drawer -->
+        <div style="margin-top:0.4rem;border-top:1px dashed rgba(255,255,255,0.1);padding-top:0.6rem">
+          <button class="btn btn-sm btn-link" style="font-size:0.75rem;color:var(--text-muted);padding:0;display:flex;align-items:center;gap:0.3rem" onclick="toggleGoogleConfigDrawer()">
+            <i class="fas fa-sliders"></i> <span>Google Cloud Client ID Settings</span>
+          </button>
+
+          <div id="googleConfigDrawer" style="display:none;margin-top:0.5rem;background:rgba(0,0,0,0.3);padding:0.8rem;border-radius:8px;font-size:0.75rem">
+            <label style="color:var(--text-muted);display:block;margin-bottom:0.2rem">Custom Google Cloud Web Client ID:</label>
+            <input type="text" id="customGoogleClientIdInput" class="form-control" placeholder="123456789-xyz.apps.googleusercontent.com" style="font-size:0.75rem;padding:0.4rem 0.6rem">
+            <div style="display:flex;gap:0.4rem;margin-top:0.4rem">
+              <button class="btn btn-sm btn-primary" style="flex:1;font-size:0.75rem" onclick="saveGoogleClientId()"><i class="fas fa-save"></i> Save & Reload Google SDK</button>
+              <button class="btn btn-sm btn-secondary" style="font-size:0.75rem" onclick="resetGoogleClientId()"><i class="fas fa-undo"></i> Reset</button>
+            </div>
+            <p style="color:var(--text-muted);font-size:0.7rem;margin-top:0.4rem;margin-bottom:0">
+              <i class="fas fa-info-circle"></i> Create at <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:#60a5fa">Google Cloud Console</a> with Authorized Origin <code>http://localhost:5500</code>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: MOBILE NUMBER OTP LOGIN & SIGN-UP -->
+      <div id="authPanePhone" style="display:none">
+        <div id="mobilePhoneStep1">
+          <label style="font-size:0.8rem;color:var(--text-muted)">Enter Mobile Number (with Country Code)</label>
+          <div style="display:flex;gap:0.5rem;margin-top:0.3rem">
+            <input type="text" id="mobilePhoneInput" class="form-control" placeholder="+91 9876543210" value="+91 9876543210" required>
+            <button class="btn btn-primary" onclick="requestMobileOtp()"><i class="fas fa-paper-plane"></i> Send OTP</button>
+          </div>
+          <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem">
+            <i class="fas fa-info-circle"></i> Checks database: If existing $\rightarrow$ <strong>Sign-In</strong>. If new $\rightarrow$ <strong>Sign-Up</strong>.
+          </p>
+        </div>
+
+        <div id="mobilePhoneStep2" style="display:none;margin-top:1rem;border-top:1px solid rgba(255,255,255,0.1);padding-top:1rem">
+          
+          <!-- Realistic Device SMS Notification Card -->
+          <div id="simulatedSmsBanner" class="glass-card" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);padding:0.8rem 1rem;border-radius:10px;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:0.5rem">
+            <div style="display:flex;align-items:center;gap:0.6rem">
+              <i class="fas fa-comment-sms" style="font-size:1.3rem;color:#10b981"></i>
+              <div>
+                <div style="font-size:0.72rem;color:var(--text-muted)">SMS Received from <strong>+91-FINFLOW</strong></div>
+                <div style="font-size:0.85rem;font-weight:700;color:#fff" id="smsTextDisplay">Your OTP is: 123456</div>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-primary" id="autoFillOtpBtn" style="padding:0.35rem 0.7rem;font-size:0.75rem" onclick="autoFillReceivedOtp()">
+              <i class="fas fa-bolt"></i> Auto-Fill
+            </button>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem">
+            <span style="font-size:0.8rem;color:#10b981;font-weight:600" id="otpNotice">OTP Sent!</span>
+            <button class="btn btn-sm btn-link" style="font-size:0.75rem;color:var(--text-muted);padding:0" onclick="resetMobileOtpStep()"><i class="fas fa-edit"></i> Change Phone</button>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:0.8rem">
+            <div id="mobileNameField" style="display:none">
+              <label style="font-size:0.8rem;color:var(--text-muted)">Your Full Name (for New Account KYC)</label>
+              <input type="text" id="mobileNameInput" class="form-control" placeholder="e.g. Ritik Pandey" value="Ritik Pandey">
+            </div>
+
+            <div>
+              <label style="font-size:0.8rem;color:var(--text-muted)">Enter 6-Digit SMS OTP</label>
+              <input type="text" id="mobileOtpInput" class="form-control" placeholder="123456" maxlength="6" style="letter-spacing:6px;font-size:1.25rem;text-align:center;font-weight:700" value="123456">
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;color:var(--text-muted)">
+              <span>Didn't receive SMS?</span>
+              <button class="btn btn-sm btn-link" style="padding:0;color:var(--color-purple);font-size:0.75rem" onclick="requestMobileOtp()"><i class="fas fa-redo"></i> Resend OTP</button>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%;padding:0.75rem" onclick="submitMobileOtpVerification()">
+              <i class="fas fa-shield-check"></i> Verify OTP & Proceed
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: PASSWORD LOGIN -->
+      <div id="authPanePassword" style="display:none">
+        <form onsubmit="event.preventDefault(); handlePasswordLogin();">
+          <div style="display:flex;flex-direction:column;gap:0.8rem">
+            <div>
+              <label style="font-size:0.8rem;color:var(--text-muted)">Work / Personal Email</label>
+              <input type="email" id="authEmailInput" class="form-control" value="ritik@financeflow.com" required>
+            </div>
+            <div>
+              <label style="font-size:0.8rem;color:var(--text-muted)">Password</label>
+              <input type="password" id="authPassInput" class="form-control" value="SecurePass123!" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-top:0.4rem;padding:0.7rem">
+              <i class="fas fa-lock"></i> Sign In & Generate JWT
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========== GOOGLE ACCOUNT CHOOSER POPUP (OFFICIAL STYLE) ========== -->
+  <div class="modal-overlay" id="googleChooserModal" style="display:none;z-index:10000">
+    <div class="modal-card glass-card" style="max-width:440px;width:95%;padding:2rem;border-radius:16px;background:#1e1e2d;border:1px solid rgba(255,255,255,0.15);box-shadow:0 20px 50px rgba(0,0,0,0.8)">
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <svg width="32" height="32" viewBox="0 0 24 24" style="margin-bottom:0.5rem"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+        <h3 style="font-size:1.15rem;margin:0">Choose an account</h3>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.2rem">to continue to <strong>FinanceFlow</strong></p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:0.6rem">
+        <!-- Account 1 (User's Device Google Account) -->
+        <div class="google-account-item glass-card" style="display:flex;align-items:center;gap:0.8rem;padding:0.75rem 1rem;cursor:pointer;border-radius:10px;transition:all 0.2s ease;border:1px solid rgba(66,133,244,0.4);background:rgba(66,133,244,0.08)" onclick="selectGoogleAccount('ritikpandeycode@gmail.com', 'Ritik Pandey')">
+          <div style="width:38px;height:38px;border-radius:50%;background:#4285F4;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;box-shadow:0 2px 8px rgba(66,133,244,0.4)">
+            R
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:0.88rem;color:#fff">Ritik Pandey</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">ritikpandeycode@gmail.com</div>
+          </div>
+          <span class="badge" style="background:#4285F4;color:#fff;font-size:0.7rem"><i class="fas fa-laptop"></i> Device Account</span>
+        </div>
+
+        <!-- Account 2 (Enterprise Account) -->
+        <div class="google-account-item glass-card" style="display:flex;align-items:center;gap:0.8rem;padding:0.75rem 1rem;cursor:pointer;border-radius:10px;transition:all 0.2s ease" onclick="selectGoogleAccount('ritik@financeflow.com', 'Ritik Pandey')">
+          <div style="width:38px;height:38px;border-radius:50%;background:#34A853;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem">
+            R
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:0.88rem">Ritik Pandey (Work)</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">ritik@financeflow.com</div>
+          </div>
+          <span class="badge" style="background:rgba(16,185,129,0.2);color:#10b981;font-size:0.7rem">FinanceFlow</span>
+        </div>
+
+        <!-- Account 3 (Personal Account) -->
+        <div class="google-account-item glass-card" style="display:flex;align-items:center;gap:0.8rem;padding:0.75rem 1rem;cursor:pointer;border-radius:10px;transition:all 0.2s ease" onclick="selectGoogleAccount('ritik.personal@gmail.com', 'Ritik Pandey (Personal)')">
+          <div style="width:38px;height:38px;border-radius:50%;background:#EA4335;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem">
+            P
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:0.88rem">Ritik Pandey (Personal)</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">ritik.personal@gmail.com</div>
+          </div>
+          <span class="badge" style="background:rgba(99,102,241,0.2);color:var(--color-purple);font-size:0.7rem">Google</span>
+        </div>
+
+        <!-- Custom Account Entry -->
+        <div id="customGoogleAccountRow" style="margin-top:0.4rem">
+          <div class="google-account-item glass-card" style="display:flex;align-items:center;gap:0.8rem;padding:0.75rem 1rem;cursor:pointer;border-radius:10px" onclick="toggleCustomGoogleInput()">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:0.9rem">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <div style="font-weight:500;font-size:0.85rem;color:var(--text-primary)">
+              Use another Google account
+            </div>
+          </div>
+
+          <div id="customGoogleInputBox" style="display:none;margin-top:0.6rem;padding:0.8rem;background:rgba(255,255,255,0.03);border-radius:10px">
+            <input type="text" id="customGoogleName" class="form-control" placeholder="Full Name" value="New User" style="margin-bottom:0.4rem;font-size:0.85rem">
+            <input type="email" id="customGoogleEmail" class="form-control" placeholder="google.email@gmail.com" style="margin-bottom:0.5rem;font-size:0.85rem">
+            <button class="btn btn-primary btn-sm" style="width:100%" onclick="submitCustomGoogleAccount()">
+              <i class="fas fa-arrow-right"></i> Sign In / Sign Up with Google
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;display:flex;justify-content:center">
+        <button class="btn btn-secondary btn-sm" onclick="closeGoogleAccountChooser()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== GOOGLE OAUTH2 PERMISSIONS & DEVICE LOCATION CONSENT MODAL ========== -->
+  <div class="modal-overlay" id="googlePermissionsConsentModal" style="display:none;z-index:10001">
+    <div class="modal-card glass-card" style="max-width:520px;width:95%;padding:2rem;border-radius:20px;background:#181826;border:1px solid rgba(255,255,255,0.18);box-shadow:0 25px 60px rgba(0,0,0,0.85);max-height:90vh;overflow-y:auto">
+      
+      <!-- Google Brand Header -->
+      <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1.2rem;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:1rem">
+        <svg width="28" height="28" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+        <div>
+          <h3 style="font-size:1.15rem;margin:0;color:#fff">Google Permissions & Access Consent</h3>
+          <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.1rem">FinanceFlow needs device & identity permissions to analyze your finances</p>
+        </div>
+      </div>
+
+      <!-- Selected Account Profile Chip -->
+      <div style="display:flex;align-items:center;gap:0.8rem;background:rgba(255,255,255,0.04);padding:0.7rem 1rem;border-radius:12px;margin-bottom:1.2rem;border:1px solid rgba(255,255,255,0.08)">
+        <div id="consentUserAvatar" style="width:40px;height:40px;border-radius:50%;background:#4285F4;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem">
+          R
+        </div>
+        <div style="flex:1">
+          <div id="consentUserName" style="font-weight:600;font-size:0.9rem">Ritik Pandey</div>
+          <div id="consentUserEmail" style="font-size:0.75rem;color:var(--text-muted)">ritik@financeflow.com</div>
+        </div>
+        <span id="consentAccountStatusBadge" class="badge" style="background:rgba(16,185,129,0.2);color:#10b981">Existing User</span>
+      </div>
+
+      <!-- Permissions Request List -->
+      <div style="display:flex;flex-direction:column;gap:0.8rem;margin-bottom:1.2rem">
+        <div style="font-size:0.8rem;font-weight:600;color:var(--color-purple);text-transform:uppercase;letter-spacing:0.5px">
+          <i class="fas fa-key"></i> Requested Device & Profile Permissions:
+        </div>
+
+        <!-- Permission 1: Identity & Name -->
+        <div style="display:flex;gap:0.7rem;align-items:flex-start;padding:0.6rem;background:rgba(255,255,255,0.02);border-radius:8px">
+          <i class="fas fa-circle-check" style="color:#10b981;margin-top:0.2rem"></i>
+          <div style="flex:1">
+            <div style="font-size:0.82rem;font-weight:600">Personal Info & Profile Picture</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">Access full name, avatar, and verified email address</div>
+          </div>
+        </div>
+
+        <!-- Permission 2: DOB & Contact -->
+        <div style="display:flex;gap:0.7rem;align-items:flex-start;padding:0.6rem;background:rgba(255,255,255,0.02);border-radius:8px">
+          <i class="fas fa-circle-check" style="color:#10b981;margin-top:0.2rem"></i>
+          <div style="flex:1">
+            <div style="font-size:0.82rem;font-weight:600">Date of Birth & Contact Phone</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.4rem">
+              <div>
+                <label style="font-size:0.7rem;color:var(--text-muted)">Date of Birth</label>
+                <input type="date" id="consentDobInput" class="form-control form-control-sm" value="1998-05-14">
+              </div>
+              <div>
+                <label style="font-size:0.7rem;color:var(--text-muted)">Phone / Contact</label>
+                <input type="text" id="consentPhoneInput" class="form-control form-control-sm" value="+91 98765 43210">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Permission 3: Live Device Location -->
+        <div style="display:flex;gap:0.7rem;align-items:flex-start;padding:0.6rem;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.2);border-radius:8px">
+          <i class="fas fa-location-crosshairs" style="color:var(--color-purple);margin-top:0.2rem"></i>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-size:0.82rem;font-weight:600">Live Device Location Access</div>
+              <button class="btn btn-sm btn-link" style="font-size:0.7rem;padding:0;color:var(--color-purple)" onclick="detectDeviceLiveLocation()"><i class="fas fa-rotate"></i> Re-detect</button>
+            </div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.2rem">Needed to calculate local tax slab, regional cost of living index & inflation</div>
+            <input type="text" id="consentLocationInput" class="form-control form-control-sm" style="margin-top:0.4rem;font-size:0.8rem;background:rgba(0,0,0,0.3)" value="Bengaluru, Karnataka, India">
+          </div>
+        </div>
+
+        <!-- Permission 4: Financial Controller Setup (Required for AI Analysis) -->
+        <div style="display:flex;gap:0.7rem;align-items:flex-start;padding:0.6rem;background:rgba(255,255,255,0.02);border-radius:8px">
+          <i class="fas fa-chart-pie" style="color:#f59e0b;margin-top:0.2rem"></i>
+          <div style="flex:1">
+            <div style="font-size:0.82rem;font-weight:600">Financial Profile & Controller Parameters</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">Essential for AI Controller to manage cash flow and provide real-time assistance</div>
+            
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.4rem">
+              <div>
+                <label style="font-size:0.7rem;color:var(--text-muted)">Occupation / Role</label>
+                <input type="text" id="consentOccupationInput" class="form-control form-control-sm" value="Senior Software Engineer">
+              </div>
+              <div>
+                <label style="font-size:0.7rem;color:var(--text-muted)">Monthly Income (₹)</label>
+                <input type="number" id="consentIncomeInput" class="form-control form-control-sm" value="90000">
+              </div>
+              <div>
+                <label style="font-size:0.7rem;color:var(--text-muted)">Monthly Budget (₹)</label>
+                <input type="number" id="consentBudgetInput" class="form-control form-control-sm" value="45000">
+              </div>
+              <div>
+                <label style="font-size:0.7rem;color:var(--text-muted)">PAN Number (Tax KYC)</label>
+                <input type="text" id="consentPanInput" class="form-control form-control-sm" value="ABCPP1234F" style="text-transform:uppercase">
+              </div>
+            </div>
+
+            <div style="margin-top:0.4rem">
+              <label style="font-size:0.7rem;color:var(--text-muted)">Primary Financial Goal</label>
+              <select id="consentGoalInput" class="form-control form-control-sm">
+                <option value="Wealth Creation & Tax Optimization">Wealth Creation & Tax Optimization</option>
+                <option value="Early Retirement (FIRE)">Early Retirement (FIRE 2035)</option>
+                <option value="House / Real Estate Purchase">House / Real Estate Purchase</option>
+                <option value="Business Expansion & Cash Flow Run">Business Expansion & Cash Flow Run</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex;gap:0.8rem;align-items:center;margin-top:1.5rem">
+        <button class="btn btn-secondary" style="flex:1" onclick="closeGooglePermissionsConsentModal()">
+          Cancel
+        </button>
+        <button id="consentSubmitBtn" class="btn btn-primary" style="flex:2;padding:0.75rem" onclick="submitGoogleConsentWithProfile()">
+          <i class="fas fa-check-double"></i> Allow & Continue
+        </button>
+      </div>
+
     </div>
   </div>
 

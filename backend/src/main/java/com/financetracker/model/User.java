@@ -27,6 +27,31 @@ public class User {
 
     private String phone;
 
+    private String dob;
+
+    private String address;
+
+    private String city;
+
+    private String location;
+
+    @Column(name = "pan_number")
+    private String panNumber;
+
+    private String occupation;
+
+    @Column(name = "monthly_income")
+    private Double monthlyIncome = 90000.0;
+
+    @Column(name = "monthly_budget")
+    private Double monthlyBudget = 45000.0;
+
+    @Column(name = "financial_goal")
+    private String primaryFinancialGoal;
+
+    @Column(name = "oauth_provider")
+    private String oauthProvider = "LOCAL";
+
     @Column(name = "profile_image")
     private String profileImage;
 
@@ -43,3 +68,4 @@ public class User {
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 }
+

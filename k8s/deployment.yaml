@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: financeflow-backend
+  namespace: financeflow
+  labels:
+    app: financeflow-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: financeflow-backend
+  template:
+    metadata:
+      labels:
+        app: financeflow-backend
+    spec:
+      containers:
+        - name: backend
+          image: financeflow/backend:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8002
+          envFrom:
+            - configMapRef:
+                name: financeflow-config
+            - secretRef:
+                name: financeflow-secrets
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+          livenessProbe:
+            httpGet:
+              path: /api/transactions/summary
+              port: 8002
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /api/transactions/summary
+              port: 8002
+            initialDelaySeconds: 20
+            periodSeconds: 10
