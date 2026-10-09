@@ -1,0 +1,335 @@
+{
+  "metadata": {
+    "timestamp": "2026-10-09T09:59:34+0530",
+    "targetServer": "http://localhost:8002",
+    "platform": "Windows 11",
+    "arch": "AMD64",
+    "pythonVersion": "3.13.1"
+  },
+  "benchmarks": {
+    "authLogin": {
+      "description": "User Login (BCrypt Cost Factor 10 Verification + JWT Generation)",
+      "stats": {
+        "count": 10,
+        "minMs": 88.35,
+        "maxMs": 162.68,
+        "avgMs": 105.5,
+        "medianMs": 99.8,
+        "p90Ms": 162.68,
+        "p95Ms": 162.68,
+        "p99Ms": 162.68,
+        "stdDevMs": 21.72
+      },
+      "firstRequestColdMs": 162.68,
+      "warmupAvgMs": 99.14,
+      "rawSamples": [
+        162.68,
+        116.9,
+        88.35,
+        94.15,
+        102.25,
+        94.43,
+        99.8,
+        96.34,
+        92.49,
+        107.6
+      ]
+    },
+    "smartMerchantMicroBenchmark": {
+      "description": "SmartMerchant Cashback/Reward Rule Engine & Categorization",
+      "totalIterations": 500,
+      "totalDurationSeconds": 6.272,
+      "throughputRequestsPerSecond": 79.71,
+      "stats": {
+        "count": 500,
+        "minMs": 2.23,
+        "maxMs": 48.31,
+        "avgMs": 12.43,
+        "medianMs": 14.63,
+        "p90Ms": 18.18,
+        "p95Ms": 26.56,
+        "p99Ms": 34.36,
+        "stdDevMs": 7.39
+      },
+      "sampleOutputs": [
+        {
+          "estimatedSavings": 85,
+          "netEffectiveCost": 765,
+          "orderAmount": 850.0,
+          "recommendedCard": "HDFC Swiggy Credit Card",
+          "rewardRate": "10% Instant Cashback",
+          "merchant": "Swiggy"
+        },
+        {
+          "estimatedSavings": 42,
+          "netEffectiveCost": 378,
+          "orderAmount": 420.0,
+          "recommendedCard": "HDFC Swiggy Credit Card",
+          "rewardRate": "10% Instant Cashback",
+          "merchant": "Zomato"
+        },
+        {
+          "estimatedSavings": 175,
+          "netEffectiveCost": 3324,
+          "orderAmount": 3499.0,
+          "recommendedCard": "ICICI Amazon Pay Card",
+          "rewardRate": "5% Unlimited Cashback",
+          "merchant": "Amazon"
+        },
+        {
+          "estimatedSavings": 95,
+          "netEffectiveCost": 1804,
+          "orderAmount": 1899.0,
+          "recommendedCard": "SBI Cashback Credit Card",
+          "rewardRate": "5% Universal Online Cashback",
+          "merchant": "Flipkart"
+        },
+        {
+          "estimatedSavings": 18,
+          "netEffectiveCost": 333,
+          "orderAmount": 350.0,
+          "recommendedCard": "SBI Cashback Credit Card",
+          "rewardRate": "5% Universal Online Cashback",
+          "merchant": "Uber"
+        }
+      ]
+    },
+    "paymentWorkflow": {
+      "description": "Payment & Transaction Ingestion Engine Performance Comparison",
+      "sampleSize": 30,
+      "sequentialProcessing": {
+        "totalDurationMs": 333.61,
+        "stats": {
+          "count": 30,
+          "minMs": 5.43,
+          "maxMs": 33.42,
+          "avgMs": 10.97,
+          "medianMs": 8.32,
+          "p90Ms": 29.23,
+          "p95Ms": 30.27,
+          "p99Ms": 33.42,
+          "stdDevMs": 7.49
+        },
+        "throughputTxPerSec": 89.92
+      },
+      "bulkBatchProcessing": {
+        "totalBatchDurationMs": 52.5,
+        "effectivePerTxMs": 1.75,
+        "stats": {
+          "count": 5,
+          "minMs": 37.07,
+          "maxMs": 65.01,
+          "avgMs": 52.5,
+          "medianMs": 52.75,
+          "p90Ms": 65.01,
+          "p95Ms": 65.01,
+          "p99Ms": 65.01,
+          "stdDevMs": 10.73
+        },
+        "throughputTxPerSec": 571.43
+      },
+      "performanceGain": {
+        "speedupMultiplier": "6.35x",
+        "latencyReductionPercentage": "84.0%",
+        "throughputIncreasePercentage": "+535.5%"
+      }
+    },
+    "coreApiEndpoints": {
+      "Auth Me (Session)": {
+        "url": "/api/auth/me",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 1.98,
+          "maxMs": 28.84,
+          "avgMs": 10.02,
+          "medianMs": 3.64,
+          "p90Ms": 22.4,
+          "p95Ms": 23.25,
+          "p99Ms": 28.84,
+          "stdDevMs": 8.74
+        }
+      },
+      "Budgets (Category Allocation)": {
+        "url": "/api/budgets",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 5.58,
+          "maxMs": 32.79,
+          "avgMs": 12.73,
+          "medianMs": 8.5,
+          "p90Ms": 28.04,
+          "p95Ms": 30.23,
+          "p99Ms": 32.79,
+          "stdDevMs": 8.11
+        }
+      },
+      "Investments (Portfolio Assets)": {
+        "url": "/api/investments",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 5.26,
+          "maxMs": 36.08,
+          "avgMs": 10.86,
+          "medianMs": 7.83,
+          "p90Ms": 29.86,
+          "p95Ms": 31.58,
+          "p99Ms": 36.08,
+          "stdDevMs": 8.54
+        }
+      },
+      "Goals (Wealth Targets)": {
+        "url": "/api/goals",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 6.21,
+          "maxMs": 20.03,
+          "avgMs": 8.28,
+          "medianMs": 7.45,
+          "p90Ms": 8.9,
+          "p95Ms": 15.76,
+          "p99Ms": 20.03,
+          "stdDevMs": 3.06
+        }
+      },
+      "Bills (Reminders)": {
+        "url": "/api/bills",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 5.56,
+          "maxMs": 34.89,
+          "avgMs": 10.44,
+          "medianMs": 7.21,
+          "p90Ms": 24.83,
+          "p95Ms": 32.34,
+          "p99Ms": 34.89,
+          "stdDevMs": 8.44
+        }
+      },
+      "Tax Summary (Deductions)": {
+        "url": "/api/tax/summary",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 9.69,
+          "maxMs": 35.68,
+          "avgMs": 14.96,
+          "medianMs": 13.29,
+          "p90Ms": 23.7,
+          "p95Ms": 27.95,
+          "p99Ms": 35.68,
+          "stdDevMs": 6.05
+        }
+      },
+      "Transactions Summary (KPI Aggregates)": {
+        "url": "/api/transactions/summary",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 9.37,
+          "maxMs": 57.47,
+          "avgMs": 15.1,
+          "medianMs": 11.7,
+          "p90Ms": 25.6,
+          "p95Ms": 34.27,
+          "p99Ms": 57.47,
+          "stdDevMs": 10.44
+        }
+      },
+      "Expenses By Category": {
+        "url": "/api/transactions/by-category",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 5.06,
+          "maxMs": 37.38,
+          "avgMs": 7.73,
+          "medianMs": 6.53,
+          "p90Ms": 7.82,
+          "p95Ms": 8.33,
+          "p99Ms": 37.38,
+          "stdDevMs": 6.22
+        }
+      },
+      "Transaction Search (Indexed query)": {
+        "url": "/api/transactions/search?q=Swiggy",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 7.06,
+          "maxMs": 70.58,
+          "avgMs": 13.51,
+          "medianMs": 9.45,
+          "p90Ms": 24.45,
+          "p95Ms": 31.9,
+          "p99Ms": 70.58,
+          "stdDevMs": 13.27
+        }
+      },
+      "Anomaly Detector (Scan)": {
+        "url": "/api/fintech/anomaly/scan",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 2.79,
+          "maxMs": 26.64,
+          "avgMs": 7.43,
+          "medianMs": 4.0,
+          "p90Ms": 21.88,
+          "p95Ms": 25.67,
+          "p99Ms": 26.64,
+          "stdDevMs": 7.44
+        }
+      },
+      "General Ledger T-Accounts": {
+        "url": "/api/fintech/ledger/t-accounts",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 2.34,
+          "maxMs": 17.62,
+          "avgMs": 6.84,
+          "medianMs": 4.01,
+          "p90Ms": 15.49,
+          "p95Ms": 17.57,
+          "p99Ms": 17.62,
+          "stdDevMs": 5.49
+        }
+      },
+      "Reconciliation Summary": {
+        "url": "/api/finance-ops/reconciliation/summary",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 5.2,
+          "maxMs": 26.89,
+          "avgMs": 9.08,
+          "medianMs": 7.57,
+          "p90Ms": 15.18,
+          "p95Ms": 17.67,
+          "p99Ms": 26.89,
+          "stdDevMs": 4.69
+        }
+      },
+      "Cash Forecast": {
+        "url": "/api/finance-ops/cash-forecast",
+        "method": "GET",
+        "stats": {
+          "count": 25,
+          "minMs": 2.75,
+          "maxMs": 33.4,
+          "avgMs": 11.67,
+          "medianMs": 4.66,
+          "p90Ms": 25.19,
+          "p95Ms": 26.85,
+          "p99Ms": 33.4,
+          "stdDevMs": 9.99
+        }
+      }
+    }
+  }
+}

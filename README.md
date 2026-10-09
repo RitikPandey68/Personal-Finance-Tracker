@@ -211,21 +211,55 @@ docker-compose up -d --build
 
 ### 📡 API Response Time Benchmarks
 
-> Measured over **5 repeated requests per endpoint** (avg / min / max). Tests run after JVM warm-up with JWT Bearer token authentication.
+> Measured across **25 repeated requests per endpoint** (after JVM warm-up with JWT Bearer authentication). Full raw logs and percentiles are available in [`performance_benchmark_results.json`](./performance_benchmark_results.json).
 
-| Endpoint | Method | Avg | Min | Max | Status |
-|---|---|---|---|---|---|
-| `/api/auth/login` | `POST` | **173 ms** | 87 ms | 417 ms | `200 OK` |
-| `/api/auth/me` | `GET` | **22 ms** | 16 ms | 45 ms | `200 OK` |
-| `/api/budgets` | `GET` | **30 ms** | 26 ms | 33 ms | `200 OK` |
-| `/api/investments` | `GET` | **29 ms** | 23 ms | 36 ms | `200 OK` |
-| `/api/goals` | `GET` | **28 ms** | 25 ms | 30 ms | `200 OK` |
-| `/api/bills` | `GET` | **30 ms** | 25 ms | 34 ms | `200 OK` |
-| `/api/tax/summary` | `GET` | **28 ms** | 25 ms | 32 ms | `200 OK` |
-| `/api/finance-ops/reconciliation/summary` | `GET` | **39 ms** | 23 ms | 96 ms | `200 OK` |
-| `/api/finance-ops/cash-forecast` | `GET` | **21 ms** | 12 ms | 34 ms | `200 OK` |
+| Endpoint | Method | Avg Latency | Median (p50) | 95th %ile (p95) | Min / Max | Status |
+|---|---|---|---|---|---|---|
+| `/api/auth/login` | `POST` | **105.5 ms** | 99.8 ms | 162.7 ms | 88.4 / 162.7 ms | `200 OK` |
+| `/api/auth/me` | `GET` | **10.0 ms** | 3.6 ms | 23.2 ms | 2.0 / 28.8 ms | `200 OK` |
+| `/api/budgets` | `GET` | **12.7 ms** | 8.5 ms | 30.2 ms | 5.6 / 32.8 ms | `200 OK` |
+| `/api/investments` | `GET` | **10.9 ms** | 7.8 ms | 31.6 ms | 5.3 / 36.1 ms | `200 OK` |
+| `/api/goals` | `GET` | **8.3 ms** | 7.5 ms | 15.8 ms | 6.2 / 20.0 ms | `200 OK` |
+| `/api/bills` | `GET` | **10.4 ms** | 7.2 ms | 32.3 ms | 5.6 / 34.9 ms | `200 OK` |
+| `/api/tax/summary` | `GET` | **15.0 ms** | 13.3 ms | 27.9 ms | 9.7 / 35.7 ms | `200 OK` |
+| `/api/transactions/summary` | `GET` | **15.1 ms** | 11.7 ms | 34.3 ms | 9.4 / 57.5 ms | `200 OK` |
+| `/api/transactions/by-category` | `GET` | **7.7 ms** | 6.5 ms | 8.3 ms | 5.1 / 37.4 ms | `200 OK` |
+| `/api/transactions/search?q=Swiggy` | `GET` | **13.5 ms** | 9.4 ms | 31.9 ms | 7.1 / 70.6 ms | `200 OK` |
+| `/api/fintech/anomaly/scan` | `GET` | **7.4 ms** | 4.0 ms | 25.7 ms | 2.8 / 26.6 ms | `200 OK` |
+| `/api/fintech/ledger/t-accounts` | `GET` | **6.8 ms** | 4.0 ms | 17.6 ms | 2.3 / 17.6 ms | `200 OK` |
+| `/api/finance-ops/cash-forecast` | `GET` | **11.7 ms** | 4.7 ms | 26.9 ms | 2.8 / 33.4 ms | `200 OK` |
 
-> **First-request (cold) login** is ~417 ms due to BCrypt password hashing (cost factor 10). Subsequent authenticated requests are all **< 50 ms** after JVM warm-up.
+---
+
+### 💳 SmartMerchant Card Switcher Micro-Benchmark
+
+> Micro-benchmark over **500 live requests** evaluating merchant classification and reward optimization across 10 top vendors (*Swiggy, Zomato, Amazon, Flipkart, Uber, MakeMyTrip, Blinkit, Starbucks, BookMyShow, Croma*):
+
+| Metric | Measured Value | Description |
+|---|---|---|
+| **Total Iterations** | `500 requests` | Warm JVM, sub-millisecond precision |
+| **Execution Duration** | `6.27 seconds` | Completed in single harness run |
+| **Engine Throughput** | **`79.71 req/sec`** | Decision & categorization rate |
+| **Average Latency** | **`12.43 ms`** | Mean end-to-end response time |
+| **Median Latency (p50)** | **`14.63 ms`** | 50th percentile latency |
+| **90th Percentile (p90)** | **`18.18 ms`** | 90% of requests finish under this time |
+| **95th Percentile (p95)** | **`26.56 ms`** | Tail latency under burst |
+| **99th Percentile (p99)** | **`34.36 ms`** | Peak tail latency |
+| **Min / Max Latency** | `2.23 ms` / `48.31 ms` | Warm minimum / GC peak |
+
+---
+
+### ⚡ Payment Workflow Speedup & Ingestion Benchmark
+
+> Comparison of **Sequential Writes** (`/api/transactions`) versus **Batch Bulk Ingestion** (`/api/transactions/bulk`) under identical database load:
+
+| Parameter | Sequential Processing | Batch / Bulk Processing | Performance Gain |
+|---|---|---|---|
+| **Batch Sample Size** | 30 individual transactions | 30 transactions in 1 bulk call | — |
+| **Total Elapsed Time** | `333.61 ms` | `52.50 ms` | **6.35x faster** |
+| **Effective Latency / Tx** | `10.97 ms` | **`1.75 ms`** | **84.0% latency drop** |
+| **Write Throughput** | `89.92 tx/sec` | **`571.43 tx/sec`** | **+535.5% throughput** |
+| **Speedup Ratio** | `1.0x` (Baseline) | **`6.35x`** | **6.35x faster ingestion** |
 
 ---
 
